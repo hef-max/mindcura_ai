@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "composed-task-240012",
+  "private_key_id": "e4f73d9fcedff13db4834ea0fa05fbb3be481853",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCzHtP0HTcblhBc\njKby6fohLaDkKf0te1yz13d62q8owjlS5At00brpvbrlK64sAL3tN+Yw2MKgvNYE\nr7UH2sANSxfBtp6uv/dyGX0BGCwNW6S1G2SnHDoBvuVgeuQcYASYNiqkUSw0lxGA\nW3ItdNHpAf5v805rkbdkwfoG/yH21o9QSUllJRcLMIfXp6S9GoyT0Gp0ClwtRtn7\nUtporhcC7XkwcKsQoAjcvE5u9iUu5t/Y/r950S8/2MYKyLGvZJPJyWmJfiUNpJgL\nuatw082qlh/psN3w0ALEGdbcyBX1zpvRbapniAmKxJHRJHIBWSwSZCTQfqhI0GXI\nxguV8sMZAgMBAAECggEAOLIhVLuKnei59RFwJqN40NeofY/s22CYzzP8VZ6yoqwX\niO010xwvlZzAc5mH39W8SEHRUtTJhic/duxG2N2cvJhwRJiRUa7hm/QFZTtJdlDz\nqX+qNFry4WqTIB7F5VVfHu7GQIyQ+XR3zbEkSs8XQjGnX7gbsmDFM9dSVLSdA4wO\n4kBIC8ehirhpzGJfdsHDsCp779Dugw28WE/aUYYVbB6/IeZv4yyHUHxWcJXOJ8LU\nsxbzlbxpe4evDI7gWQg/qVpIt7cGITmv/sojFkmV4vtiXeOVnKb+ZRhsr5J0A9pA\nJEbTpvwp+UOUkI9TbgoyhJcnZYM7REQ8QLKJYyMdIQKBgQDcguhcQsbzRO0e6vaw\nU1KJbWpL9WxfacrjLzo8DC+D4FxBIolRsfuRDRFQZ4Py3i9KqHg1vJfK9maqmdKW\nlL9B9+Fv19RtdFsIq6U8wXb3IIWSe59rILy5zmAQ7+ItFuiG+tBviAGTgc+aUsq2\nToftnQB6goK7PlcSPNGbYBt6CwKBgQDP8pvv2Tb6YPHnbw7+kXRcLaDo9LvS2qH7\nQ5ppn7kIynN2Pps1UHhOYe/RioDsJnMcE6bv3TY9+z1BmKzjbEkyzL+SAXAWRnUV\ncO+Vesgzrnq3kiEBE3MDTn8CJiuqZa7X8RX5caTbda+Wl0fQdrjAseN3zCAM76BR\nNxBzfz0R6wKBgCu8z2fVWu7PohS62BlbPYjCqg3M7STzr+ll6bAVXqtSqhnFRuVs\nXxCDPgbrsVFP3qN5TPajpJv+SZjXD90MPe9QwmdTsO/Q32mV2h115inYSoYmfRVb\nlfNoyscxPXRiEdcMEqG8oUtnuQzMFScZ5n4r4PdrwZBwKgcVByJBatHHAoGBAKin\nSwO3d1iQggHDWDTtgaM1OplVzHPR8KgaB0V9TpQrpoOTeUw/TKO92MRpAfEFqjxu\nT+mgz1prxx3JlwcIj0GNQB5J3j+iu1k9dIMWxwLrkwoJkY0O2iwnYOk8ThPwTmND\nXCAopJ19kIChh5Qyhdt7K1LBEomLW8oiz8vsuXorAoGAZ+QqvncazszPZFJG0n6d\nCG58Hlpc0pyDGCLVKTLMxsWX3DSzjIEpyi+dcm4myYBVbqTNuNKGv0TT9YJEmvdU\n0tExmWJ/5GfvTwlCiDlPNqgOPppw5M8GxUKgdFGNYLkq/TVvq0XRA+FcadqyJBDt\nQmnmBSDBheXCfWWhvfzJZ+o=\n-----END PRIVATE KEY-----\n",
+  "client_email": "mindcura-tts@composed-task-240012.iam.gserviceaccount.com",
+  "client_id": "109289398201493451317",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mindcura-tts%40composed-task-240012.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
