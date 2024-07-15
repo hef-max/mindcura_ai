@@ -202,7 +202,7 @@ export default function RegisterForm() {
                 <Image src={"/images/Header Logo.png"}
                 width={500}
                 height={500}
-                className="w-80"
+                className="w-80" alt="logo support by"
                 />
             </div>
         </div>

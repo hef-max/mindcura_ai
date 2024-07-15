@@ -93,7 +93,7 @@ export default function LoginForm() {
                 <Image src={"/images/Header Logo.png"}
                 width={300}
                 height={400}
-                className="h-15"
+                className="h-15" alt="logo support by"
                 />
             </div>
         </div>

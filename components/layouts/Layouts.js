@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
         };
 
         fetchUserData();
-    }, []);
+    }, [setUser]);
 
     return (
         <main className={`w-screen h-screen select-none ${poppins.className}`}>

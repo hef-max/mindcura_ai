@@ -12,28 +12,23 @@ export const UI = ({ hidden, ...props }) => {
   const [consultationCompleted, setConsultationCompleted] = useState(false);
   const [firstConsultationDate, setFirstConsultationDate] = useState(null);
   const firstConsultation = localStorage.getItem('firstConsultationDate');
-  
-  useEffect(() => {
-    if (firstConsultation) {
-      setFirstConsultationDate(new Date(firstConsultation));
-    }
-  }, []);
 
-  const sendMessage = (text) => {
+  const sendMessage = useCallback((text) => {
     if (!loading && !message) {
       chat(text);
-      if (input.current) input.current.value = '';
+      if (input.current) input.current.value = "";
       resetTranscript();
-      setConsultationCompleted(true);
+      setConsultationCompleted(true); 
     }
-  };
+  }, [loading, message, chat, resetTranscript]);
 
-  const handleVoiceInput = () => {
-    sendMessage(transcript);
-  };
+  const handleVoiceInput = useCallback(() => {
+    const text = transcript;
+    sendMessage(text);
+  }, [transcript, sendMessage]);
 
   const startListening = useCallback(() => {
-    SpeechRecognition.startListening({
+    SpeechRecognition.startListening({ 
       continuous: true,
       language: 'id'
     });
@@ -42,32 +37,39 @@ export const UI = ({ hidden, ...props }) => {
   const stopListening = useCallback(() => {
     SpeechRecognition.stopListening();
     handleVoiceInput();
-  }, [transcript]);
-
-  if (!browserSupportsSpeechRecognition) {
-    return <span>Browser doesn&apos;t support speech recognition.</span>;
-  }
-
-  if (hidden) {
-    return null;
-  }
-  
+  }, [handleVoiceInput]);
 
   useEffect(() => {
+    if (!browserSupportsSpeechRecognition) {
+      return;
+    }
+
+    if (firstConsultation) {
+      setFirstConsultationDate(new Date(firstConsultation));
+    }
+
+    if (consultationCompleted && !firstConsultationDate) {
+      const now = new Date();
+      setFirstConsultationDate(now);
+      localStorage.setItem('firstConsultationDate', now.toISOString());
+      addWeeklyConsultationEvent(now);
+      setConsultationCompleted(false);
+    }
+
     const fetchRiwayat = async () => {
       try {
-        const res = await fetch('http://localhost:5001/riwayat', {
-          method: 'GET',
-          credentials: 'include'
+        const res = await fetch("http://localhost:5001/api/riwayat", {
+            method: "GET",
+            credentials: 'include'
         });
         if (res.ok) {
-          const data = await res.json();
-          setRiwayat(data);
+            const data = await res.json();
+            setRiwayat(data);
         } else {
-          console.error('Error fetching consultation history:', res.statusText);
+            console.error("Error fetching consultation history:", res.statusText);
         }
       } catch (error) {
-        console.error('Error fetching consultation history:', error);
+          console.error("Error fetching consultation history:", error);
       }
     };
 
@@ -102,16 +104,10 @@ export const UI = ({ hidden, ...props }) => {
       }
     };
 
-    if (consultationCompleted && !firstConsultationDate) {
-      const now = new Date();
-      setFirstConsultationDate(now);
-      localStorage.setItem('firstConsultationDate', now.toISOString());
-      addWeeklyConsultationEvent(now);
-      setConsultationCompleted(false);
-    }
-
+    addWeeklyConsultationEvent();
     fetchRiwayat();
-  }, [consultationCompleted, firstConsultationDate]);
+  }, [browserSupportsSpeechRecognition, consultationCompleted, firstConsultation, firstConsultationDate]);
+
 
   return (
     <>

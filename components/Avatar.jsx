@@ -127,7 +127,7 @@ export function Avatar(props) {
     audio.play();
     setAudio(audio);
     audio.onended = onMessagePlayed;
-  }, [message]);
+  }, [message, onMessagePlayed]);
 
   const { animations } = useGLTF("/models/animations.glb");
 
@@ -139,7 +139,7 @@ export function Avatar(props) {
   useEffect(() => {
     actions[animation].reset().fadeIn(mixer.stats.actions.inUse === 0 ? 0 : 0.5).play();
     return () => actions[animation].fadeOut(0.5);
-  }, [animation]);
+  }, [animation, actions, mixer.stats.actions.inUse]);
 
   const lerpMorphTarget = (target, value, speed = 0.1) => {
     scene.traverse((child) => {
