@@ -2,16 +2,14 @@
 import * as React from "react";
 import Image from "next/image";
 import Layout from "@/components/layouts/Layouts";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatHistoryCard from "@/components/elements/ChatHistoryCard";
-import useFetchStressLevel from "@/hooks/useFetchStressLevel";
+import MonitoringCard from "@/components/elements/Monitoring";
 
 export default function Activity() {
     const [moodStats, setMoodStats] = React.useState([]);
     const [consultationHistory, setConsultationHistory] = React.useState([]);
-    const { stressLevel, error } = useFetchStressLevel();
+    const [latestConsultation, setLatestConsultation] = React.useState(null);
 
     React.useEffect(() => {
         const fetchMoodHistory = async () => {
@@ -46,6 +44,12 @@ export default function Activity() {
                 if (res.ok) {
                     const data = await res.json();
                     setConsultationHistory(data);
+                    const latest = data.reduce((latest, current) => {
+                        const latestDate = new Date(latest.date);
+                        const currentDate = new Date(current.date);
+                        return currentDate > latestDate ? current : latest;
+                    }, data[0]);
+                    setLatestConsultation(latest)
                 } else {
                     console.error("Error fetching consultation history:", res.statusText);
                 }
@@ -53,9 +57,11 @@ export default function Activity() {
                 console.error("Error fetching consultation history:", error);
             }
         };
+
         fetchMoodHistory();
         fetchConsultationHistory();
     }, []);
+    
 
     return (
         <Layout>
@@ -63,27 +69,15 @@ export default function Activity() {
                 {/* Left Section */}
                 <div className="flex flex-col gap-5 w-full md:w-1/3">
                     {/* Blok Stress Decreased */}
-                    <div className="flex w-full md:w-[360px] h-[100px] rounded-lg bg-primary-200 items-center p-2 pl-[10px] gap-3">
-                        <FontAwesomeIcon icon={faPlus} size="xl" color="" className="bg-white p-7 rounded-lg w-5 h-5"/>
-                        {/* Blok Stress Level */}
-                        {stressLevel ? (
-                            <div className="flex flex-col gap-2">
-                                <h1 className="font-semibold text-lg">Tingkatan Stress</h1>
-                                <div className="flex gap-2">
-                                    <div className={`w-[65px] h-1 rounded-lg ${stressLevel.stress.includes('High') ? 'bg-danger' : stressLevel.stress.includes('Moderate') ? 'bg-warning' : 'bg-success'}`}></div>
-                                </div>
-                                <h4 className="font-normal text-xs">{stressLevel.description}</h4>
-                            </div>
-                        ) : (
-                            <p className="text-black-500">{error || "Loading..."}</p>
-                        )}
+                    <div className="flex w-full h-[120px] rounded-lg bg-primary-200 items-center p-2 pl-[10px] gap-3">
+                        {latestConsultation && <MonitoringCard item={latestConsultation}/>}
                     </div>
                     {/* Blok Mood History */}
-                    <div className="flex w-full md:w-[360px] h-[100px] rounded-lg bg-primary-200 items-center p-2 flex-col gap-2">
-                        <div className="flex w-full justify-between">
+                    <div className="flex w-full w-full h-auto rounded-lg bg-primary-200 items-center p-2 flex-col gap-2">
+                        <div className="flex w-full justify-between mb-2">
                             <h4 className="font-medium text-sm">Riwayat Mood</h4>
                         </div>
-                        <div className="flex gap-2 justify-between w-full">
+                        <div className="flex flex-wrap gap-2 justify-start w-full">
                             {moodStats.map((mood, index) => (
                                 <div key={index} className={`p-2 rounded-lg flex flex-col items-center ${mood.color}`}>
                                     <Image

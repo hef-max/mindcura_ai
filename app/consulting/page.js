@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import Layout from "@/components/layouts/Layouts";
+import LoadingPage from "@/components/elements/LoadingPage";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -39,6 +40,8 @@ export default function Consulting() {
     const [responses, setResponses] = useState(Array(QUESTIONS.length).fill(null));
     const [error, setError] = useState("");
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const handleOptionChange = (index, value) => {
         const newResponses = [...responses];
@@ -48,6 +51,7 @@ export default function Consulting() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         if (responses.includes(null)) {
             setError("Please answer all questions.");
             return;
@@ -64,7 +68,11 @@ export default function Consulting() {
             });
 
             if (res.ok) {
-                router.push('/avatar');
+                setTimeout(() => {
+                    router.push('/avatar');
+                    setIsLoading(false);
+                }, 5000);
+                // router.push('/avatar');
             } else {
                 const data = await res.json();
                 setError(data.message || "An error occurred");
@@ -76,6 +84,7 @@ export default function Consulting() {
 
     return (
         <Layout>
+            {isLoading && <LoadingPage setLoadingComplete={() => setIsLoading(false)} />}
             <div className={`flex justify-center w-screen h-screen px-2 py-5`}>
                 <div className="flex flex-col gap-4 h-[2550px] shadow-lg p-5 rounded-lg border-t-4 border-primary-400">
                     <h1 className="text-2xl font-semibold my-4">KUISIONER DEPRESSION ANXIETY STRESS SCALE 21 (DASS-21)</h1>

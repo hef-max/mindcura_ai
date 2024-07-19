@@ -1,9 +1,16 @@
 // next.config.mjs
+
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
-    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '**',
+      },
+    ],
   },
 };
-  
-  export default nextConfig;
+
+export default nextConfig;

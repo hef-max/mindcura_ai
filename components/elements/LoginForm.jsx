@@ -45,6 +45,12 @@ export default function LoginForm() {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          handleSubmit(e);
+        }
+    };
+
     return (
         <div className={`flex flex-col items-center justify-center min-h-screen px-2 py-5 ${poppins.className}`}>
             <div className="flex flex-col gap-4 w-[320px] shadow-lg p-5 rounded-lg border-t-4 border-primary-600 bg-primary-100">
@@ -55,8 +61,10 @@ export default function LoginForm() {
                         <input
                             onChange={(e) => setEmail(e.target.value)}
                             type="email"
-                            placeholder="E-mail"
+                            placeholder="Email"
+                            onKeyDown={handleKeyDown} // Add this line
                             className="w-full outline-none border-none bg-transparent p-0"
+                            autoComplete="email"
                         />
                     </div>
                     <div className="flex flex-col">
@@ -66,10 +74,12 @@ export default function LoginForm() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 type="password"
                                 placeholder="Kata Sandi"
+                                onKeyDown={handleKeyDown} // Add this line
                                 className="w-full outline-none border-none bg-transparent p-0"
+                                autoComplete="current-password"
                             />
                         </div>
-                        <Link className="mt-3 text-right opacity-80 text-xs" href={"/"}>
+                        <Link className="mt-3 text-right opacity-80 text-xs" href={"/forgotpass"}>
                             Lupa Kata Sandi?
                         </Link>
                     </div>
@@ -91,9 +101,11 @@ export default function LoginForm() {
             <div className="mt-5 flex flex-col items-center">
                 <h2 className="text-sm text-center mb-5">Didukung oleh</h2>
                 <Image src={"/images/Header Logo.png"}
-                width={300}
-                height={400}
-                className="h-15" alt="logo support by"
+                priority={true}
+                width={257}
+                height={357}
+                className="h-auto w-auto"
+                alt="Logo support by"
                 />
             </div>
         </div>

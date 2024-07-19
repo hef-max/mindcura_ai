@@ -28,7 +28,7 @@ export default function About() {
                             alt='logo image'
                             width={400}
                             height={400}
-                            className="rounded-sm overflow-hidden"
+                            className="w-auto h-auto rounded-sm overflow-hidden"
                         />
                     </div>
                 </div>
@@ -41,42 +41,42 @@ export default function About() {
                         alt="Supported by" 
                         width={90} 
                         height={90} 
-                        className="h-20" 
+                        className="w-auto h-auto" 
                     />
                     <Image 
                         src="/images/logo uty.png" 
                         alt="Supported by" 
                         width={80} 
-                        height={130} 
-                        className="h-20" 
+                        height={110} 
+                        className="w-auto h-auto" 
                     />
                     <Image 
                         src="/images/Logo_Kampus_Merdeka_Kemendikbud.png" 
                         alt="Supported by" 
-                        width={140} 
-                        height={80} 
-                        className="h-20" 
+                        width={110} 
+                        height={20} 
+                        className="w-auto h-auto" 
                     />
                     <Image 
                         src="/images/Logo-PKM-Warna.png" 
                         alt="Supported by" 
-                        width={140} 
+                        width={120} 
                         height={80} 
-                        className="h-20" 
+                        className="w-auto h-auto" 
                     />
                     <Image 
                         src="/images/Logo-BS-Warna.png" 
                         alt="Supported by" 
-                        width={120} 
+                        width={110} 
                         height={80} 
-                        className="h-20" 
+                        className="w-auto h-auto" 
                     />
                     <Image 
                         src="/images/logo simbelmawa.png" 
                         alt="Supported by" 
-                        width={140} 
-                        height={80} 
-                        className="h-15" 
+                        width={120} 
+                        height={20} 
+                        className="w-auto h-auto" 
                     />
                 </div>
                 

@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function NewsDetailCard({ item }) {
     return (
         <div className="relative overflow-visible p-3">
-            <Link href={`/edukasi/news/${item.id}`} legacyBehavior>
+            <Link href={`${item.link}`} legacyBehavior>
                 <a className="block transform transition duration-300 ease-in-out hover:text-primary-600 hover:scale-105 hover:shadow-lg flex flex-col gap-2 rounded-lg bg-white border shadow-md p-4 overflow-visible h-full">
                     <div className="flex justify-center">
                         <Image
@@ -14,7 +14,8 @@ export default function NewsDetailCard({ item }) {
                             alt={item.title}
                             width={200}
                             height={100}
-                            className="flex rounded-lg object-cover items-center justify-center"
+                            priority={true}
+                            className="w-auto h-auto flex rounded-lg object-cover items-center justify-center"
                         />
                     </div>
                     <div className="flex flex-col gap-1">

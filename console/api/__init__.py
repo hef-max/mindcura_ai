@@ -5,6 +5,9 @@ from flask_login import LoginManager
 from .auth import auth as auth_blueprint
 from .auth import mongo
 from .models import User, db
+import os
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 migrate = Migrate()
 login_manager = LoginManager()
@@ -15,8 +18,8 @@ def create_app():
     app.secret_key = '_5#y2L"F4Q8z\n\xec]//'
     app.config["MONGO_URI"] = "mongodb://localhost:27017/mind"
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mind.db'
-    app.config['UPLOAD_FOLDER'] = 'D:/MindCura/apps/mindcura-ai/public/images'
-
+    app.config['UPLOAD_FOLDER'] = os.path.join(PROJECT_ROOT, 'public', 'images')
+    
     mongo.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)

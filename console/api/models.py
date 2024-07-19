@@ -6,6 +6,20 @@ import datetime
 
 db = SQLAlchemy()
 
+
+class QuestionnaireResponseMongo:
+    def __init__(self, user_id, answers):
+        self.user_id = user_id
+        self.answers = answers
+        self.timestamp = datetime.now()
+
+    def to_dict(self):
+        return {
+            "user_id": self.user_id,
+            "answers": self.answers,
+            "timestamp": self.timestamp
+        }
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -103,10 +117,10 @@ class Schedule(db.Model):
     __tablename__ = 'schedules'
     
     id = Column(Integer, primary_key=True)
-    status = Column(String(50), nullable=False)
-    imageUrl = Column(String(255), nullable=False)
-    scheduleTitle = Column(String(255), nullable=False)
-    time = Column(String(50), nullable=False)
+    status = Column(String(50), nullable=True)
+    imageUrl = Column(String(255), nullable=True)
+    scheduleTitle = Column(String(255), nullable=True)
+    time = Column(String(50), nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'))
 
     def __repr__(self):

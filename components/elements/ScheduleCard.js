@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function ScheduleCard({ item }) {
     return (
-        <div className="relative w-full flex items-center gap-4 p-2 pl-4 rounded-lg bg-primary-50 mb-2 cursor-pointer">
+        <div className="relative w-full flex items-center gap-4 p-2 pl-4 rounded-lg bg-primary-50 mb-2">
             <div className={`absolute w-1 h-8 left-0 rounded-r-md ${item.status === "danger" ? "bg-danger" : item.status === "warning" ? "bg-warning" : item.status === "success" ? "bg-success" : ""}`}></div>
             <Image 
                 src={item.imageUrl}

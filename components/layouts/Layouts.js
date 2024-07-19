@@ -41,12 +41,14 @@ const Layout = ({ children }) => {
     return (
         <main className={`w-screen h-screen select-none ${poppins.className}`}>
             <nav className='fixed w-screen items-center justify-between flex py-4 px-4 md:px-10 shadow bg-white z-50'>
-                <Link href='/'>
+                <Link href='/dashboard'>
                     <Image 
                         src="/images/Group103.png"
                         alt='logo image'
-                        width={185}
-                        height={185}
+                        width={130}
+                        height={130}
+                        priority={true}
+                        className='w-[190px] h-auto'
                     />
                 </Link>
                 <nav className="lg:flex hidden w-full justify-center">
@@ -60,7 +62,8 @@ const Layout = ({ children }) => {
                             alt='logo image'
                             width={45}
                             height={45}
-                            className="rounded-full h-[35px] object-cover border-solid"
+                            priority={true}
+                            className="rounded-full w-[50px] h-[40px] object-cover border-solid"
                         />
                     </Link>
                     <h5 className="font-semibold gap-3">Hi, {user?.username}!</h5>

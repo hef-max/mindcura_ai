@@ -1,42 +1,36 @@
-# from tensorflow.keras.models import load_model
-from flask import Blueprint, jsonify, request, current_app, send_file
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from .models import *
-import datetime
-import logging
-import json
-from flask_pymongo import PyMongo
-import google.generativeai as genai
-import os
-import cv2
-import io
-from pydub import AudioSegment
-# from transformers import pipeline
-from google.oauth2 import service_account
-from google.cloud import texttospeech
-from dotenv import load_dotenv
-from pygame import mixer
-import base64
-from werkzeug.utils import secure_filename
-import subprocess
-import openai
-import numpy as np
-import librosa
-from fpdf import FPDF
-from reportlab.lib.pagesizes import letter
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask import Blueprint, jsonify, request, current_app, send_file
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from email.mime.multipart import MIMEMultipart
+from werkzeug.utils import secure_filename
+from reportlab.lib.pagesizes import letter
+from google.oauth2 import service_account
+from datetime import datetime, timedelta
+from google.cloud import texttospeech
+from email.mime.text import MIMEText
+from flask_pymongo import PyMongo
+from dotenv import load_dotenv
+from pydub import AudioSegment
+from pygame import mixer
+from .models import *
+# import tensorflow as tf
+import numpy as np
+import subprocess
+import warnings
+import logging
+import smtplib
+import librosa
+import base64
+import openai
+import json
+import cv2
+import os
+# tf.compat.v1.reset_default_graph()
 
 logging.basicConfig(level=logging.DEBUG)
-
-# pretrained_name = "w11wo/indonesian-roberta-base-sentiment-classifier"
-
-# classifier = pipeline(
-#     "sentiment-analysis",
-#     model=pretrained_name,
-#     tokenizer=pretrained_name
-# )
+logging.getLogger('numba').setLevel(logging.WARNING)
 
 mongo = PyMongo()
 auth = Blueprint('auth', __name__)
@@ -44,67 +38,46 @@ auth = Blueprint('auth', __name__)
 load_dotenv()
 mixer.init()
 
-# Model CNN dan LSTM 
-# cnn_model = load_model('./model_v1.2.h5')
-# lstm_model = load_model('./best_audio_model.h5')
-# cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-# lstm_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 cnn_model = ""
 lstm_model = ""
 
+# cnn_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'model_v1.2.h5'))
+# lstm_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'best_audio_model.h5'))
 
-# Save the audio to a file
-audio_path_mp3 = f"D:/MindCura/apps/mindcura-ai/public/audios/message_0.mp3"
-audio_path_wav = f"D:/MindCura/apps/mindcura-ai/public/audios/message_0.wav"
-audio_path_json = f"D:/MindCura/apps/mindcura-ai/public/audios/message_0.json"
+# cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+# lstm_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+audio_path_mp3 = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.mp3')
+audio_path_wav = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.wav')
+audio_path_json = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.json')
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-# Configure Google Generative AI
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-pro")
-chat = model.start_chat(history=[])
-
-# Configure Google Text-to-Speech
 credentials = service_account.Credentials.from_service_account_file(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
 tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
 
-class QuestionnaireResponseMongo:
-    def __init__(self, user_id, answers):
-        self.user_id = user_id
-        self.answers = answers
-        self.timestamp = datetime.datetime.now()
-
-    def to_dict(self):
-        return {
-            "user_id": self.user_id,
-            "answers": self.answers,
-            "timestamp": self.timestamp
-        }
 
 #2gK@rT5!hL9^mD8*
 def hitung_usia(tanggal_lahir):
     tanggal_lahir = f'{tanggal_lahir}'
-    tanggal_lahir = datetime.datetime.strptime(tanggal_lahir, "%Y-%m-%d %H:%M:%S")
-    tanggal_hari_ini = datetime.datetime.today()
+    tanggal_lahir = datetime.strptime(tanggal_lahir, "%Y-%m-%d %H:%M:%S")
+    tanggal_hari_ini = datetime.today()
     usia = tanggal_hari_ini.year - tanggal_lahir.year
     if (tanggal_hari_ini.month, tanggal_hari_ini.day) < (tanggal_lahir.month, tanggal_lahir.day):
         usia -= 1
     return usia
 
 def resume(text):
-    res = f"buatkan kesimpulan sederhana dari text ini maksimal 3 baris kalimat: {text}"
-    return get_chatgpt_response(res)
+    resume = f"Buatkan kesimpulan sederhana dari kalimat ini maksimal 3 baris kalimat: {text}"
+    return get_chatgpt_response(resume)
 
 def generate_pdf(consultation_id):
-    print(consultation_id)
     consultation = ConsultationHistory.query.filter_by(id=consultation_id).first()
     filename = f"consultation_summary_{consultation_id}.pdf"
     document = SimpleDocTemplate(filename, pagesize=letter)
     styles = getSampleStyleSheet()
     
-    # Define custom styles
     title_style = styles['Heading1']
     subtitle_style = styles['Heading2']
     normal_style = styles['BodyText']
@@ -134,37 +107,15 @@ def generate_pdf(consultation_id):
     content.append(Paragraph(f"Anak ke: {current_user.anakke}", custom_style))
     content.append(Spacer(1, 12))
     
-    # Riwayat Keluhan
-    content.append(Paragraph("RIWAYAT KELUHAN", subtitle_style))
-    content.append(Spacer(1, 12))
-    content.append(Paragraph(f"Waktu: {current_user.created_at}", custom_style))
-    content.append(Paragraph(f"Deskripsi: ", custom_style))
-    content.append(Spacer(1, 12))
-
-    # Asesmen
-    content.append(Paragraph("ASESMEN", subtitle_style))
-    content.append(Spacer(1, 12))
-    content.append(Paragraph("Hasil Observasi Aktivitas Sehari-hari: ", custom_style))
-    content.append(Paragraph("Hasil Observasi Perilaku saat Wawancara: ", custom_style))
-    content.append(Paragraph("Kesimpulan: ", custom_style))
-    content.append(Spacer(1, 12))
-    
-    # Diagnosis
-    content.append(Paragraph("Hasil Konsultasi", subtitle_style))
-    content.append(Spacer(1, 12))
-    content.append(Paragraph(f"Aksis I :", custom_style))
-    content.append(Spacer(1, 12))
-    
     # Hasil DASS-21
-    content.append(Paragraph("B hasil DASS-21:", subtitle_style))
-    content.append(Paragraph(f"Hasil DASS: {consultation.resdass}", custom_style))
-    content.append(Paragraph(f"Hasil DSM: {consultation.resdsm}", custom_style))
+    content.append(Paragraph("Hasil DASS-21:", subtitle_style))
+    content.append(Paragraph(f"{consultation.resdass} {consultation.resdsm}", custom_style))
     content.append(Spacer(1, 12))
 
     # Hasil Wawancara
     content.append(Paragraph("Hasil Wawancara", subtitle_style))
     content.append(Spacer(1, 12))
-    content.append(Paragraph(f"Kesimpulan: {consultation.chathistory}", custom_style))
+    content.append(Paragraph(f"Kesimpulan: {get_dsm_explanation()}", custom_style))
 
     # Build the PDF
     document.build(content)
@@ -185,7 +136,6 @@ def save_summary(name, ava, date, resdass, resdsm, chathistory):
     db.session.add(summary)
     db.session.commit()
 
-    # Menyimpan juga di MongoDB
     summary_mongo = {
         "name": name,
         "ava": ava,
@@ -197,13 +147,11 @@ def save_summary(name, ava, date, resdass, resdsm, chathistory):
         "created_at": summary.created_at
     }
     mongo.db.consultation_history.insert_one(summary_mongo)
-
     return summary.id
-
 
 def get_chatgpt_response(message):
     response = openai.ChatCompletion.create(
-        model="ft:gpt-3.5-turbo-0125:personal:mindcura-llms5:9jKghIM0", 
+        model="ft:gpt-3.5-turbo-0125:personal:mindcura-llms6:9m1r41aE", 
         messages=[
             {"role": "system", "content": "Kamu adalah asisten kesehatan mental"},
             {"role": "user", "content": message}
@@ -222,10 +170,6 @@ def read_json_transcript(file_path):
 
 def lip_sync_message():
     subprocess.run(["rhubarb", "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
-
-def get_gemini_response(question):
-    response = chat.send_message(question)
-    return response
 
 def text_to_speech_google(text):
     text = text.replace('.', ', ').replace(':', ',').replace('*', '')
@@ -252,16 +196,7 @@ def text_to_speech_google(text):
     audio.export(audio_path_wav, format='wav')
 
 
-def classify_face_emotion(image_path):
-    if not os.path.exists(image_path):
-        print(f"Image file {image_path} does not exist.")
-        return None
-
-    image = cv2.imread(image_path)
-    if image is None:
-        print(f"Could not read the image from {image_path}")
-        return None
-
+def classify_face_emotion(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = cv2.resize(image, (120, 120)) 
     image = np.expand_dims(image, axis=-1)  
@@ -273,16 +208,10 @@ def classify_face_emotion(image_path):
     return emotion
 
 
-def classify_voice_emotion(audio_file):
-    features = extract_audio_features(audio_file)
-    features = np.expand_dims(features, axis=0)
-    predictions = lstm_model.predict(features)
-    emotion = np.argmax(predictions) 
-    return emotion
-
-
 def extract_audio_features(audio_file, n_mfcc=13, n_chroma=12, n_mels=128, duration=2.5, offset=0.6):
-    y, sr = librosa.load(audio_file, sr=None, duration=duration, offset=offset)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        y, sr = librosa.load(audio_file, sr=None, duration=duration, offset=offset)
 
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
     mfccs = np.mean(mfccs.T, axis=0)
@@ -300,8 +229,16 @@ def extract_audio_features(audio_file, n_mfcc=13, n_chroma=12, n_mels=128, durat
         features = np.pad(features, (0, 420 - len(features)), 'constant')
     elif len(features) > 420:
         features = features[:420]
+
     return features
 
+def classify_voice_emotion(audio_file):
+    features = extract_audio_features(audio_file)
+    features = np.expand_dims(features, axis=0)
+    features = np.expand_dims(features, axis=-1) 
+    predictions = lstm_model.predict(features)
+    emotion = np.argmax(predictions) 
+    return emotion
 
 def calculate_levels():
     user_id = str(current_user.id)
@@ -319,7 +256,7 @@ def calculate_levels():
 
 def get_gpt_explanation(depression_level, anxiety_level, stress_level):
     question = (
-        f"Dari kuisioner DASS-21 scores: Depresi - {depression_level}, Kecemasan - {anxiety_level}, Stres - {stress_level}. "
+        f"Dari kuisioner DASS 21 skor: Depresi - {depression_level}, Kecemasan - {anxiety_level}, Stres - {stress_level}. "
     )
     response = get_chatgpt_response(question)
     return response
@@ -350,6 +287,50 @@ def display_levels(depression_level, anxiety_level, stress_level):
     explanation = get_gpt_explanation(depression_result, anxiety_result, stress_result)
 
     return explanation
+
+def get_dsm_explanation():
+    question = "Bisakah Anda merangkum hasil dari konsultasi saya?"
+    response = get_chatgpt_response(question)
+    return response
+
+
+@auth.route('/api/classify_lstm', methods=['POST'])
+def classify_lstm():
+    if 'audio_file' not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+    
+    audio_file = request.files['audio_file']
+    filename = secure_filename(audio_file.filename)
+    audio_file_path = os.path.join("uploads", filename)
+    audio_file.save(audio_file_path)
+
+    emotion = classify_voice_emotion(audio_file_path) 
+
+    classify_value = {1: 'neutral', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'angry', 6: 'fear', 7: 'disgust', 8: 'surprise'}
+    voice_classify = classify_value.get(emotion)
+
+    print("voice emotion:", voice_classify)
+    return jsonify({"emotion": voice_classify}), 200
+
+
+@auth.route('/classify', methods=['POST'])
+def classify():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file_path = os.path.join('uploads', filename)
+    file.save(file_path)
+
+    image = cv2.imread(file_path)
+    emotion = classify_face_emotion(image)
+
+    classify_value = {1: 'neutral', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'angry', 6: 'fear', 7: 'disgust', 8: 'surprise'}
+    face_classify = classify_value.get(emotion)
+
+    print("face emotion:", face_classify)
+    return jsonify({"emotion": face_classify}), 200
 
 
 @auth.route('/register', methods=['POST'])
@@ -426,14 +407,13 @@ def login():
     except Exception as e:
         logging.error(f"Error occurred: {e}")
         return jsonify(message="An error occurred"), 500
-
+    
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
     return jsonify(message="Logout successful"), 200
-
 
 @auth.route('/dashboard', methods=['POST'])
 @login_required
@@ -491,6 +471,47 @@ def mood_history():
 def protected_route():
     return jsonify(message=f"Hello {current_user.username}, you are logged in!")
 
+def add_schedule():    
+    status = 'danger'
+    imageUrl = '/images/konsultasi-notif.jpg'
+    scheduleTitle = 'Konsultasi Mingguan'
+    one_week_later = datetime.utcnow() + timedelta(weeks=1)
+    time = one_week_later.strftime('%Y-%m-%d %H:%M:%S')
+
+    new_schedule = Schedule(
+        status=status,
+        imageUrl=imageUrl,
+        scheduleTitle=scheduleTitle,
+        time=time,
+        user_id=current_user.id
+    )
+
+    db.session.add(new_schedule)
+    db.session.commit()
+
+    schedule_dict = {
+        "status": status,
+        "imageUrl": imageUrl,
+        "scheduleTitle": scheduleTitle,
+        "time": time,
+        "user_id": current_user.id
+    }
+    mongo.db.schedules.insert_one(schedule_dict)
+    return jsonify({"message": "Schedule added successfully"}), 201
+    
+
+def riwayat():
+    depression_level, anxiety_level, stress_level = calculate_levels()
+    name = current_user.username
+    ava = "/icons/pdf.png" 
+    date = datetime.utcnow().strftime('%d %B %Y')
+    resdass = f"Stress = {stress_level} | Anxiety = {anxiety_level} | Depression = {depression_level}"
+    resdsm = ""
+    chathistory = f"{display_levels(depression_level, anxiety_level, stress_level)}" #harus ditambahkan fungsi khusus
+
+    save_summary(name, ava, date, resdass, resdsm, chathistory)
+    return jsonify(message="succes")
+
 
 @auth.route('/api/submit_response', methods=['POST'])
 @login_required
@@ -514,6 +535,12 @@ def submit_response():
         
         response_mongo = QuestionnaireResponseMongo(user_id=current_user.id, answers=answers)
         mongo.db.questionnaire_responses.insert_one(response_mongo.to_dict())
+
+        riwayat()
+        
+        first_consultation = Schedule.query.filter_by(user_id=current_user.id).first()
+        if first_consultation is None:
+            add_schedule()
         
         return jsonify(message="Response submitted successfully"), 201
     
@@ -526,7 +553,7 @@ def submit_response():
 def consultation_history():
     if request.method == "GET":
         try:
-            consultations = ConsultationHistory.query.filter_by(user_id=current_user.id).all()
+            consultations = ConsultationHistory.query.filter_by(user_id=current_user.id).order_by(ConsultationHistory.date.desc()).all()
             consultation_list = [
                 {
                     "id": consultation.id,
@@ -539,6 +566,7 @@ def consultation_history():
                 } for consultation in consultations
             ]
             return jsonify(consultation_list), 200
+        
         except Exception as e:
             return jsonify({"message": f"An error occurred: {e}"}), 500
         
@@ -561,55 +589,29 @@ def consultation_history():
             return jsonify({"message": f"An error occurred: {e}"}), 500
 
 
-@auth.route('/api/schedule', methods=['GET', 'POST'])
+@auth.route('/api/schedule', methods=['GET'])
 @login_required
 def schedule():
     if request.method == 'GET':
         schedule = Schedule.query.filter_by(user_id=current_user.id).first()
+
+        if schedule is None:
+            return jsonify(meesage="belum ada jadwal"), 500
+
         schedule_list = {
-                "status": schedule.status,
-                "imageUrl": schedule.imageUrl,
-                "scheduleTitle": schedule.scheduleTitle,
-                "time": schedule.time
-            } 
+            "status": schedule.status,
+            "imageUrl": schedule.imageUrl,
+            "scheduleTitle": schedule.scheduleTitle,
+            "time": schedule.time
+        } 
         return jsonify(schedule_list), 200
 
-    elif request.method == 'POST':
-        data = request.get_json()
-        status = data.get('status')
-        imageUrl = data.get('imageUrl')
-        scheduleTitle = data.get('scheduleTitle')
-        time = data.get('time')
-
-        if not status or not imageUrl or not scheduleTitle or not time:
-            return jsonify({"error": "All fields are required"}), 400
-
-        new_schedule = Schedule(
-            status=status,
-            imageUrl=imageUrl,
-            scheduleTitle=scheduleTitle,
-            time=time,
-            user_id=current_user.id
-        )
-        db.session.add(new_schedule)
-        db.session.commit()
-
-        schedule_dict = {
-            "status": status,
-            "imageUrl": imageUrl,
-            "scheduleTitle": scheduleTitle,
-            "time": time,
-            "user_id": current_user.id
-        }
-        mongo.db.schedules.insert_one(schedule_dict)
-
-        return jsonify({"message": "Schedule added successfully"}), 201
 
 @auth.route('/api/daily_activity', methods=['GET', 'POST'])
 @login_required
 def daily_activity():
     if request.method == 'GET':
-        daily_activities = DailyActivity.query.filter_by(user_id=current_user.id).all()
+        daily_activities = DailyActivity.query.filter_by(user_id=current_user.id).first()
         daily_activity_list = [
             {
                 "title": activity.title,
@@ -640,7 +642,6 @@ def daily_activity():
         db.session.add(new_activity)
         db.session.commit()
 
-        # Save to MongoDB
         activity_dict = {
             "title": title,
             "subtitle": subtitle,
@@ -651,7 +652,6 @@ def daily_activity():
         mongo.db.daily_activities.insert_one(activity_dict)
 
         return jsonify({"message": "Daily activity added successfully"}), 201
-
 
 
 @auth.route('/api/stress_level', methods=['GET'])
@@ -716,6 +716,7 @@ def users():
             "univ": current_user.univ,
             "prodi": current_user.prodi,
             "npm": current_user.npm,
+            "anakke": current_user.anakke,
             'myfiles': current_user.myfiles
         }
         return jsonify(user_data)
@@ -732,12 +733,11 @@ def users():
             updates['email'] = data['email']
         if 'birth' in data:
             try:
-                birth_date = datetime.datetime.strptime(data['birth'], '%d %B %Y')
+                birth_date = datetime.strptime(data['birth'], '%d %B %Y')
                 current_user.birth = birth_date
                 updates['birth'] = birth_date
             except ValueError:
                 return jsonify({'message': 'Invalid date format. Use "DD Month YYYY".'}), 400
-            
         if 'address' in data:
             current_user.address = data['address']
             updates['address'] = data['address']
@@ -756,6 +756,9 @@ def users():
         if 'npm' in data:
             current_user.npm = data['npm']
             updates['npm'] = data['npm']
+        if 'anakke' in data:
+            current_user.anakke = data['anakke']
+            updates['anakke'] = data['anakke']
         if 'myfiles' in request.files:
             file = request.files['myfiles']
             if file:
@@ -789,22 +792,19 @@ def chatbot():
         chat_data = request.get_json()
         user_message = chat_data.get('message')
 
-        # Inisialisasi variabel untuk respons teks
         text_response = ""
         initial_message = False
 
-        # Cek apakah ada pesan dari pengguna
         if not user_message:
-            # Jika tidak ada pesan, hitung level DASS-21 dan buat respons
             depression_level, anxiety_level, stress_level = calculate_levels()
-            text_response = display_levels(depression_level, anxiety_level, stress_level)
-            # Setelah membacakan hasil, mulai percakapan dengan menanyakan nama pengguna
-            text_response += "Saya Mira asisten kesehatan mental Anda. Sekarang, mari kita mulai percakapan. Bolehkah saya tahu nama Anda?"
+            text_response = f"""Halo Saya Mira, asisten kesehatan mental Kamu.
+              Saya akan membacakan hasil dari kusioner sebelumnya, {display_levels(depression_level, anxiety_level, stress_level)}.
+              Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Kamu?"""
             initial_message = True
-
-        text_response = get_chatgpt_response(user_message)
-
-        # Simpan riwayat percakapan pengguna
+        
+        if user_message:
+            text_response = get_chatgpt_response(user_message)
+        
         user_chat_history = ChatHistory(
             role='user',
             text=user_message or "Generated DASS-21 levels"
@@ -833,7 +833,6 @@ def chatbot():
         }
         mongo.db.ChatHistory.insert_one(chat_dict)
 
-        # Konversi teks ke suara
         text_to_speech_google(text=text_response)
         lip_sync_message()
 
@@ -874,23 +873,6 @@ def download_summary_endpoint(consultation_id):
     
     return send_file(f'../{pdf_path}', as_attachment=True, download_name=f'api/consultation_summary_{consultation_id}.pdf', mimetype='application/pdf')
 
-
-@auth.route('/riwayat', methods=['GET'])
-@login_required
-def riwayat():
-    if request.method == "GET":
-        # depression_level, anxiety_level, stress_level = calculate_levels()
-
-        # name = current_user.username
-        # ava = "/icons/pdf.png" 
-        # date = datetime.datetime.utcnow().strftime('%d %B %Y')
-        # resdass = f"Stress = {stress_level} | Anxiety = {anxiety_level} | Depression = {depression_level}"
-        # resdsm = display_levels(depression_level, anxiety_level, stress_level)
-        # chathistory = "Hasil konsultasi avatar." #harus ditambahkan fungsi khusus
-
-        # save_summary(name, ava, date, resdass, resdsm, chathistory)
-
-        return jsonify(message="succes")
     
 
 @auth.route('/api/check_questionnaire', methods=['GET'])
@@ -900,84 +882,78 @@ def check_questionnaire():
     is_filled = questionnaire_response is not None
     return jsonify({"isFilled": is_filled}), 200
 
-# @auth.route('/avatar', methods=['GET'])
-# @login_required
-# def avatar():
-#     if request.method == "GET":
-#         depression_level, anxiety_level, stress_level = calculate_levels()
-#         text_response = display_levels(depression_level, anxiety_level, stress_level)
-#         text_to_speech_google(text=text_response)
-#         lip_sync_message()
 
-#         return jsonify({
-#             "messages": [
-#                 {
-#                     "text": text_response,
-#                     "audio": audio_file_to_base64(audio_path_wav),
-#                     "lipsync": read_json_transcript(audio_path_json),
-#                     "facialExpression": "smile",
-#                     "animation": "Talking_1",
-#                 }
-#             ]
-#         })
-    
-#     if request.method == "POST":
-#         if 'image' not in request.files or 'audio' not in request.files:
-#             return jsonify({"error": "No image or audio provided"}), 400
+def send_verification_code(email):
+    code = np.random.randint(100000, 999999)
+    email = ""
+    # verification_codes[email] = code  # Simpan kode ke database atau cache
+    send_email(email, code)
 
-#         image = request.files['image']
-#         audio = request.files['audio']
+def send_email(to_email, code):
+    from_email = "mindcurauty@gmail.com"
+    password = "your-email-password"
+    subject = "Your Verification Code"
+    body = f"Your verification code is: {code}"
 
-#         image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(image.filename))
-#         audio_path = os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(audio.filename))
+    # Membuat pesan email
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
 
-#         image.save(image_path)
-#         audio.save(audio_path)
+    msg.attach(MIMEText(body, 'plain'))
 
-#         face_emotion = classify_face_emotion(image_path)
-#         voice_emotion = classify_voice_emotion(audio_path)
+    try:
+        # Menghubungkan ke server SMTP Gmail
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(from_email, password)
+        text = msg.as_string()
+        server.sendmail(from_email, to_email, text)
+        server.quit()
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
-#         sentiment_result = classifier(audio_path)
-#         sentiment = sentiment_result[0]["label"]
+def verify_code(email, code):
+    saved_code = ""
+    # saved_code = verification_codes.get(email)  # Ambil kode dari database atau cache
+    return saved_code == code
 
-#         emotion_history = EmotionHistory(
-#             user_id=current_user.id,
-#             face_emotion=face_emotion,
-#             voice_emotion=voice_emotion,
-#             sentiment=sentiment,
-#             timestamp=datetime.datetime.utcnow()
-#         )
 
-#         db.session.add(emotion_history)
-#         db.session.commit()
+@auth.route('/send_verification_code', methods=['POST'])
+def send_verification_code_route():
+    data = request.get_json()
+    email = data.get('email')
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+    send_verification_code(email)
+    return jsonify({"message": "Verification code sent"}), 200
 
-#         emotion_dict = {
-#             "user_id": current_user.id,
-#             "face_emotion": face_emotion,
-#             "voice_emotion": voice_emotion,
-#             "sentiment": sentiment,
-#             "timestamp": emotion_history.timestamp
-#         }
 
-#         mongo.db.EmotionHistory.insert_one(emotion_dict)
+@auth.route('/verify_code', methods=['POST'])
+def verify_code_route():
+    data = request.get_json()
+    email = data.get('email')
+    code = data.get('code')
+    if not email or not code:
+        return jsonify({"error": "Email and code are required"}), 400
+    if verify_code(email, code):
+        return jsonify({"message": "Code verified"}), 200
+    else:
+        return jsonify({"error": "Invalid code"}), 400
 
-#         return jsonify({
-#             "face_emotion": face_emotion,
-#             "voice_emotion": voice_emotion,
-#             "sentiment": sentiment
-#         })
 
-#     elif request.method == "GET":
-#         emotion_history = EmotionHistory.query.filter_by(user_id=current_user.id).all()
-
-#         emotion_history_list = [{
-#             "face_emotion": e.face_emotion,
-#             "voice_emotion": e.voice_emotion,
-#             "sentiment": e.sentiment,
-#             "timestamp": e.timestamp
-            
-#         } for e in emotion_history]
-
-#         return jsonify({
-#             "emotion_history": emotion_history_list
-#         })
+@auth.route('/update_password', methods=['POST'])
+def update_password():
+    data = request.get_json()
+    email = data.get('email')
+    new_password = data.get('new_password')
+    if not email or not new_password:
+        return jsonify({"error": "Email and new password are required"}), 400
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    user.password = generate_password_hash(new_password)
+    db.session.commit()
+    return jsonify({"message": "Password updated"}), 200

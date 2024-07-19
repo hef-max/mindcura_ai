@@ -25,28 +25,21 @@ export const THERAPIST_LIST = [
     {
         image: "/images/therapist/therapist1.jpg",
         name: "I PUTU ANDIKA SANJAYA S.Psi, M.Psi, Psikolog",
-        whatsapp: "123456789",
+        whatsapp: "+6285700027104",
         specialization: "Psikolog Klinis",
         location: "Sleman, Yogyakarta",
     },
     {
         image: "/images/therapist/therapist2.PNG",
         name: "HARISMA FAKHRUN NISA S.Psi, M.Psi, Psikolog",
-        whatsapp: "123456789",
+        whatsapp: "+6281575628871",
         specialization: "Psikolog Klinis",
         location: "Sleman, Yogyakarta",
     },
     {
         image: "/icons/user.png",
         name: "AYU REZKI UTARI S.Psi, M.Psi, Psikolog",
-        whatsapp: "123456789",
-        specialization: "Psikolog Klinis",
-        location: "Sleman, Yogyakarta",
-    },
-    {
-        image: "/icons/user.png",
-        name: "Teddy Bagus Hernowo M.Psi, Psikolog",
-        whatsapp: "123456789",
+        whatsapp: "+628995110181",
         specialization: "Psikolog Klinis",
         location: "Sleman, Yogyakarta",
     },
@@ -93,55 +86,43 @@ export const MOODS_STATS_PER_WEEK = [
 ]
 
 export const NEWS_LIST = [
-    {
-        id: '1',
-        title: 'Apa itu kesehatan mental?',
-        date: '8 Juli 2024',
-        image: '/images/Mental-Health.jpg',
-        category: 'Kesehatan Mental',
-        content: 'Kesehatan mental adalah kondisi kesejahteraan emosional, psikologis, dan sosial seseorang. Kesehatan mental memengaruhi cara kita berpikir, merasakan, dan bertindak dalam menghadapi kehidupan. Kesehatan mental juga menentukan bagaimana kita menangani stres, berhubungan dengan orang lain, dan membuat keputusan. Kesehatan mental adalah bagian penting dari setiap tahap kehidupan, dari masa kanak-kanak dan remaja hingga dewasa.',
-    },
-    {
-        id: '2',
-        title: 'Mengenal Stress',
-        date: '9 Juli 2024',
-        image: '/images/Student-Stress.jpg',
-        category: 'Stress',
-        content: 'Stres adalah reaksi tubuh terhadap situasi yang dianggap mengancam atau menantang. Setiap orang pasti pernah mengalami stres dalam hidupnya. Stres bisa berasal dari berbagai sumber, seperti pekerjaan, masalah pribadi, hubungan sosial, atau perubahan besar dalam hidup.',
-    },
-    {
-        id: '3',
-        title: 'Pengaruh Lingkungan Pertemanan Terhadap Kesehatan Mental',
-        date: '10 Juli 2024',
-        image: '/images/Gambar (27).png',
-        category: 'Stress',
-        content: 'Lingkungan pertemanan memiliki peran yang signifikan dalam membentuk kesehatan mental seseorang. Pertemanan yang sehat dan positif dapat memberikan dukungan emosional, meningkatkan rasa percaya diri, dan membantu seseorang menghadapi berbagai tantangan hidup. Sebaliknya, lingkungan pertemanan yang negatif dapat meningkatkan risiko masalah kesehatan mental seperti kecemasan, depresi, dan stres.',
-    },
-    {
-        id: '4',
-        title: 'Perbedaan Psikologis dan Psikiatri',
-        date: '9 Juli 2024',
-        image: '/images/Psikolog-vs-Psikiater.jpg',
-        category: 'Stress',
-        content: 'Psikolog dan psikiater adalah dua profesional yang bekerja di bidang kesehatan mental, namun mereka memiliki peran, pendidikan, dan metode kerja yang berbeda.',
-    },
-    {
-        id: '5',
-        title: 'Pengaruh Lingkungan Pertemanan Terhadap Kesehatan Mental',
-        date: '10 Juli 2024',
-        image: '/images/Gambar (27).png',
-        category: 'Stress',
-        content: 'Lingkungan pertemanan memiliki peran yang signifikan dalam membentuk kesehatan mental seseorang. Pertemanan yang sehat dan positif dapat memberikan dukungan emosional, meningkatkan rasa percaya diri, dan membantu seseorang menghadapi berbagai tantangan hidup. Sebaliknya, lingkungan pertemanan yang negatif dapat meningkatkan risiko masalah kesehatan mental seperti kecemasan, depresi, dan stres.',
-    },
-    {
-        id: '6',
-        title: 'Perbedaan Psikologis dan Psikiatri',
-        date: '9 Juli 2024',
-        image: '/images/Psikolog-vs-Psikiater.jpg',
-        category: 'Stress',
-        content: 'Psikolog dan psikiater adalah dua profesional yang bekerja di bidang kesehatan mental, namun mereka memiliki peran, pendidikan, dan metode kerja yang berbeda.',
-    }
-  ]
+  {
+      id: '1',
+      title: 'Apa itu kesehatan mental?',
+      date: '8 Juli 2024',
+      image: '/images/Mental-Health.jpg',
+      category: 'Kesehatan Mental',
+      link: 'https://www.halodoc.com/kesehatan/kesehatan-mental',
+      content: 'Kesehatan mental adalah kondisi kesejahteraan emosional, psikologis, dan sosial seseorang. Kesehatan mental memengaruhi cara kita berpikir, merasakan, dan bertindak dalam menghadapi kehidupan. Kesehatan mental juga menentukan bagaimana kita menangani stres, berhubungan dengan orang lain, dan membuat keputusan. Kesehatan mental adalah bagian penting dari setiap tahap kehidupan, dari masa kanak-kanak dan remaja hingga dewasa.',
+  },
+  {
+      id: '2',
+      title: 'Mengenal Stress',
+      date: '9 Juli 2024',
+      image: '/images/Student-Stress.jpg',
+      category: 'Stress',
+      link: 'https://www.alodokter.com/ternyata-tidak-sulit-mengatasi-stres',
+      content: 'Stres adalah reaksi tubuh terhadap situasi yang dianggap mengancam atau menantang. Setiap orang pasti pernah mengalami stres dalam hidupnya. Stres bisa berasal dari berbagai sumber, seperti pekerjaan, masalah pribadi, hubungan sosial, atau perubahan besar dalam hidup.',
+  },
+  {
+    id: '3',
+    title: 'Pengaruh Lingkungan Pertemanan Terhadap Kesehatan Mental',
+    date: '10 Juli 2024',
+    image: '/images/Gambar (27).png',
+    category: 'Stress',
+    link: 'https://m.kumparan.com/amp/minamisalwapramesti22/peran-teman-dan-circle-pertemanan-terhadap-kesehatan-mental-1zQqOUjY9st',
+    content: 'Lingkungan pertemanan memiliki peran yang signifikan dalam membentuk kesehatan mental seseorang. Pertemanan yang sehat dan positif dapat memberikan dukungan emosional, meningkatkan rasa percaya diri, dan membantu seseorang menghadapi berbagai tantangan hidup. Sebaliknya, lingkungan pertemanan yang negatif dapat meningkatkan risiko masalah kesehatan mental seperti kecemasan, depresi, dan stres.',
+  },
+  {
+    id: '4',
+    title: 'Perbedaan Psikologis dan Psikiatri',
+    date: '9 Juli 2024',
+    image: '/images/Psikolog-vs-Psikiater.jpg',
+    category: 'Stress',
+    link: 'https://www.halodoc.com/artikel/ini-perbedaan-psikiater-dan-psikolog-dalam-mengatasi-gangguan-mental',
+    content: 'Psikolog dan psikiater adalah dua profesional yang bekerja di bidang kesehatan mental, namun mereka memiliki peran, pendidikan, dan metode kerja yang berbeda.',
+  }
+]
 
 export const MOODS_LIST = [
     {
@@ -198,12 +179,12 @@ export const DAILY_ACTIVITY_LIST = [
     imageUrl: "/images/meditation.jpg",
     status: "ongoing"
   },
-  {
-    title: "Bersosialisasi dengan teman atau keluarga",
-    subtitle: "Menghabiskan waktu dengan teman, baik secara langsung atau virtual, dapat meningkatkan suasana hati.",
-    imageUrl: "/images/sosial.jpg",
-    status: "ongoing"
-  },
+  // {
+    // title: "Bersosialisasi dengan teman atau keluarga",
+    // subtitle: "Menghabiskan waktu dengan teman, baik secara langsung atau virtual, dapat meningkatkan suasana hati.",
+    // imageUrl: "/images/sosial.jpg",
+    // status: "ongoing"
+  // },
   {
     title: "Menjadi relawan",
     subtitle: "Membantu orang lain dapat meningkatkan suasana hati dan menghubungkan Anda secara sosial, mencegah isolasi, dan memberikan rasa puas.",
@@ -289,3 +270,4 @@ export const CONSULTAN_HISTORY = [
       chathistory: "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
   }
 ]
+

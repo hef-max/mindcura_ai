@@ -111,6 +111,12 @@ export default function RegisterForm() {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          handleSubmit(e);
+        }
+    };
+
     return (
         <div className={`flex flex-col items-center justify-center w-full h-full px-2 py-10 overflow-x-hidden ${poppins.className}`}>
             <div className="flex flex-col gap-4 w-full sm:w-[60%] h-full shadow-lg p-5 rounded-lg border-t-4 border-primary-600 bg-primary-100">
@@ -122,7 +128,9 @@ export default function RegisterForm() {
                                 onChange={(e) => setName(e.target.value)}
                                 type="text"
                                 placeholder="Nama Lengkap"
+                                onKeyDown={handleKeyDown}
                                 className="w-full outline-none border-none bg-transparent p-0"
+                                autoComplete="username"
                             />
                         </div>
                         <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
@@ -130,7 +138,9 @@ export default function RegisterForm() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 type="email"
                                 placeholder="E-mail"
+                                onKeyDown={handleKeyDown}
                                 className="w-full outline-none border-none bg-transparent p-0"
+                                autoComplete="email"
                             />
                         </div>
                         <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
@@ -138,7 +148,9 @@ export default function RegisterForm() {
                                 onChange={handlePasswordChange}
                                 type="password"
                                 placeholder="Kata Sandi"
+                                onKeyDown={handleKeyDown}
                                 className="w-full outline-none border-none bg-transparent p-0"
+                                autoComplete="current-password"
                             />
                         </div>
                         <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
@@ -146,15 +158,19 @@ export default function RegisterForm() {
                                 onChange={handleConfirmPasswordChange}
                                 type="password"
                                 placeholder="Konfirmasi Kata Sandi"
+                                onKeyDown={handleKeyDown}
                                 className="w-full outline-none border-none bg-transparent p-0"
+                                autoComplete="new-password"
                             />
                         </div>
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]" >
                             <select
                                 onChange={(e) => setJK(e.target.value)}
+                                onKeyDown={handleKeyDown}
                                 className="w-full outline-none border-none bg-transparent p-0"
+                                defaultValue="default"
                             >
-                                <option value="" disabled selected className="text-gray-200">Jenis Kelamin</option>
+                                <option value="default">Jenis Kelamin</option>
                                 <option value="Laki-laki">Laki-laki</option>
                                 <option value="Perempuan">Perempuan</option>
                                 <option value="Lainnya">Lainnya</option>
@@ -165,6 +181,7 @@ export default function RegisterForm() {
                                 onChange={handleBirthChange}
                                 type="date"
                                 max={new Date().toISOString().split('T')[0]}
+                                onKeyDown={handleKeyDown}
                                 className="w-full outline-none border-none bg-transparent p-0"
                             />
                         </div>
@@ -200,9 +217,11 @@ export default function RegisterForm() {
             <div className="mt-5">
                 <h2 className="text-sm text-center mb-5">Didukung oleh</h2>
                 <Image src={"/images/Header Logo.png"}
-                width={500}
-                height={500}
-                className="w-80" alt="logo support by"
+                priority={true}
+                width={257}
+                height={357}
+                className="h-auto w-auto"
+                alt="Logo support by"
                 />
             </div>
         </div>

@@ -27,8 +27,8 @@ export default function ConsentForm() {
     
     return (
         <div className={`w-full h-full flex flex-col lg:flex-row ${poppins.className}`}>
-            <div className="w-full lg:w-[80%] h-100px lg:h-100px bg-primary-50 p-4 sm:p-14 flex flex-col gap-5">
-                <h1 className="font-bold text-2xl capitalize mb-10">Informed Consent Form</h1>
+            <div className="w-full lg:w-[80%] h-100px lg:h-100px bg-primary-50 p-2 sm:p-10 flex flex-col gap-5">
+                <h1 className="font-bold text-2xl capitalize mb-5">Formulir Persetujuan yang Diinformasikan</h1>
                 <p className="text-justify"><b>Tujuan Pengambilan Data: </b>
                 Dalam proses penilaian dan intervensi, penting untuk kami jelaskan tujuan di balik pengumpulan informasi Anda. Hal ini dilakukan dengan tujuan memahami kebutuhan Anda secara menyeluruh dan memberikan bantuan yang sesuai. Kami menghargai kepercayaan Anda dalam memberikan informasi pribadi. Setiap data yang Anda berikan akan digunakan untuk merancang rencana perawatan yang sesuai dengan kebutuhan Anda. Sebelum kami mulai proses penilaian atau intervensi, kami akan menjelaskan secara jelas tujuan kami mengumpulkan informasi dari Anda. Hal ini bertujuan untuk memastikan bahwa setiap langkah yang kami ambil sesuai dengan kebutuhan Anda dan memberikan manfaat yang maksimal. Tujuan kami dalam mengambil data untuk assessment dan intervensi adalah untuk memahami situasi Anda secara holistik dan menyediakan bantuan yang paling efektif sesuai dengan kebutuhan Anda.</p>
                 <p className="text-justify"><b>Prosedur: </b>
@@ -46,7 +46,7 @@ export default function ConsentForm() {
                 <p className="text-justify"><b>Kerahasiaan: </b>
                 Pengambilan data ini dilakukan untuk Program Kreatif Mahasiswa (PKM) dan dapat dikembangkan menjadi penelitian yang akan dipublikasikan. Apabila hasil suara ini digunakan untuk kepentingan pembelajaran di luar kelas, identitas Anda sebagai informan yang terlibat dalam proses ini dirahasiakan.</p>
                 <p className="text-justify"><b>Hak untuk Menyatakan Ketidaksetujuan dan Persetujuan: </b>
-                Partisipasi Anda di dalam proses terkait bersifat terikat. Oleh karenanya, Anda boleh menyatakan ketidaksetujuan SEBELUM membubuhkan tanda tangan pada form ini.</p>
+                Partisipasi Anda di dalam proses terkait bersifat terikat. Oleh karenanya, Anda boleh menyatakan ketidaksetujuan sebelum menandatangani form ini.</p>
             </div>
             <div className="w-full lg:w-[50%] h-100px lg:h-100px bg-primary-200 p-4 sm:p-14 flex flex-col items-center justify-evenly">
                 <div className="flex gap-3 items-center">
@@ -55,6 +55,7 @@ export default function ConsentForm() {
                         alt="logo image"
                         width={200}
                         height={200}
+                        priority={true}
                         className="w-[70px] sm:w-[100px] h-[100px] sm:h-[400px] object-contain"
                     />
                     <h1 className="font-bold text-2xl sm:text-5xl text-primary-600">MindCura</h1>

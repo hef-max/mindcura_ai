@@ -4,17 +4,52 @@ import Layout from "@/components/layouts/Layouts";
 import { useAuth } from "../authContext";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAddressCard, faLock, faShieldAlt, faBell, faSignOutAlt, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faLock, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import AlertDialogComponent from "@/components/elements/AlertDialog";
-import { useState } from "react";
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 export default function Account() {
     const router = useRouter();
     const { user } = useAuth();
     const [profilePic, setProfilePic] = useState(null);
     const fileInputRef = useRef(null);
-    const [successMessage, setSuccessMessage] = useState('');
+    const [message, setMessage] = useState('');
+    const [formData, setFormData] = useState({
+        username: user?.username || '',
+        email: user?.email || '',
+        birth: user?.birth || '',
+        JK: user?.JK || '',
+        univ: user?.univ || '',
+        prodi: user?.prodi || '',
+        npm: user?.npm || '',
+        number: user?.number || '',
+        anakke: user?.anakke || '',
+        address: user?.address || ''
+    });
+    const [initialData, setInitialData] = useState({});
+
+    useEffect(() => {
+        if (user) {
+            const initialFormData = {
+                username: user?.username || '',
+                email: user?.email || '',
+                birth: user?.birth || '',
+                JK: user?.JK || '',
+                univ: user?.univ || '',
+                prodi: user?.prodi || '',
+                npm: user?.npm || '',
+                number: user?.number || '',
+                anakke: user?.anakke || '',
+                address: user?.address || ''
+            };
+            setFormData(initialFormData);
+            setInitialData(initialFormData);
+        }
+    }, [user]);
+
+    const handleCancel = () => {
+        setFormData(initialData); // Reset the form to its initial data
+    };
 
     const handleLogout = async () => {
         try {
@@ -37,23 +72,37 @@ export default function Account() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
+
+        const isFormDataChanged = Object.keys(initialData).some(key => initialData[key] !== formData[key]);
+
+        if (!isFormDataChanged && !profilePic) {
+            setMessage("Tidak ada yang diupdate");
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
+            return;
+        }
+
+        const newFormData = new FormData();
+        Object.keys(formData).forEach(key => {
+            newFormData.append(key, formData[key]);
+        });
         if (profilePic) {
-            formData.append('myfiles', profilePic);
+            newFormData.append('myfiles', profilePic);
         }
 
         try {
             const res = await fetch("http://localhost:5001/api/users", {
                 method: "POST",
                 credentials: 'include',
-                body: formData,
+                body: newFormData,
             });
 
             if (res.ok) {
                 console.log("Update successfully");
-                setSuccessMessage("Update successful!");
+                setMessage("Update successful!");
                 setTimeout(() => {
-                    setSuccessMessage('');
+                    setMessage('');
                 }, 3000); // Hide message after 3 seconds
             } else {
                 console.log("Update not successful");
@@ -69,6 +118,14 @@ export default function Account() {
 
     const handleFileChange = (e) => {
         setProfilePic(e.target.files[0]);
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
 
     return (
@@ -124,54 +181,59 @@ export default function Account() {
                     <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Nama Lengkap</label>
-                            <input type="text" name="username" defaultValue={user?.username} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="username" value={formData.username} onChange={handleChange} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Email</label>
-                            <input type="email" name="email" disabled="disable" defaultValue={user?.email} className="p-2 w-[80%] border rounded" />
+                            <input type="email" name="email" disabled="disable" value={formData.email} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Tanggal Lahir</label>
-                            <input type="text" name="birth" defaultValue={user?.birth} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="birth" defaultValue={formData.birth} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Jenis Kelamin</label>
-                            <input type="text" name="jeniskelamin" disabled="disable" defaultValue={user?.JK} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="jeniskelamin" disabled="disable" value={formData.JK} onChange={handleChange} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Universitas</label>
-                            <input type="text" name="univ" defaultValue={user?.univ} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="univ" value={formData.univ} onChange={handleChange} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Program Studi</label>
-                            <input type="text" name="prodi" defaultValue={user?.prodi} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="prodi" value={formData.prodi} onChange={handleChange} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Nomor Pokok Mahasiswa</label>
-                            <input type="text" name="npm" defaultValue={user?.npm} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="npm" value={formData.npm} onChange={handleChange} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Nomor Telepon</label>
-                            <input type="text" name="number" defaultValue={user?.number} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="number" value={formData.number} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="font-semibold mb-1">Anak ke</label>
+                            <input type="text" name="anakke" value={formData.anakke} onChange={handleChange} className="p-2 w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col w-full">
                             <label className="font-semibold mb-1">Alamat</label>
                             <input 
                                 type="text" 
                                 name="address" 
-                                defaultValue={user?.address} 
+                                value={formData.address} 
+                                onChange={handleChange}
                                 className="p-2 border rounded w-full h-10"
                             />
                         </div>
                         <div className="col-span-2 flex justify-end gap-4">
                             <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Update</button>
-                            <button type="button" className="bg-gray-300 py-2 px-4 rounded">Cancel</button>
+                            <button type="button" onClick={handleCancel} className="bg-gray-300 py-2 px-4 rounded">Cancel</button>
                         </div>
                     </form>
                 </div>
-                {successMessage && (
-                    <div className="success-message">
-                        {successMessage}
+                {message && (
+                    <div className={`fixed rounded success-message ${message === 'Update successful!' ? 'bg-green-500' : 'bg-yellow-500'} text-white`}>
+                        {message}
                     </div>
                 )}
             </div>
