@@ -13,9 +13,8 @@ from email.mime.text import MIMEText
 from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 from pydub import AudioSegment
-from pygame import mixer
 from .models import *
-# import tensorflow as tf
+import tensorflow as tf
 import numpy as np
 import subprocess
 import warnings
@@ -27,7 +26,7 @@ import openai
 import json
 import cv2
 import os
-# tf.compat.v1.reset_default_graph()
+tf.compat.v1.reset_default_graph()
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('numba').setLevel(logging.WARNING)
@@ -36,17 +35,16 @@ mongo = PyMongo()
 auth = Blueprint('auth', __name__)
 
 load_dotenv()
-mixer.init()
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-cnn_model = ""
-lstm_model = ""
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+GOOGLE_APPLICATION_CREDENTIALS = os.path.join(ROOT, 'composed-task-240012-e4f73d9fcedf.json')
 
-# cnn_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'model_v1.2.h5'))
-# lstm_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'best_audio_model.h5'))
+cnn_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'model_v1.2.h5'))
+lstm_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'best_audio_model.h5'))
 
-# cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-# lstm_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+cnn_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+lstm_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 audio_path_mp3 = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.mp3')
 audio_path_wav = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.wav')
@@ -54,15 +52,15 @@ audio_path_json = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.json
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-credentials = service_account.Credentials.from_service_account_file(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
+credentials = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
 tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
 
 
 #2gK@rT5!hL9^mD8*
 def hitung_usia(tanggal_lahir):
     tanggal_lahir = f'{tanggal_lahir}'
-    tanggal_lahir = datetime.strptime(tanggal_lahir, "%Y-%m-%d %H:%M:%S")
-    tanggal_hari_ini = datetime.today()
+    tanggal_lahir = datetime.datetime.strptime(tanggal_lahir, "%Y-%m-%d %H:%M:%S")
+    tanggal_hari_ini = datetime.datetime.today()
     usia = tanggal_hari_ini.year - tanggal_lahir.year
     if (tanggal_hari_ini.month, tanggal_hari_ini.day) < (tanggal_lahir.month, tanggal_lahir.day):
         usia -= 1
@@ -475,7 +473,7 @@ def add_schedule():
     status = 'danger'
     imageUrl = '/images/konsultasi-notif.jpg'
     scheduleTitle = 'Konsultasi Mingguan'
-    one_week_later = datetime.utcnow() + timedelta(weeks=1)
+    one_week_later = datetime.datetime.utcnow() + timedelta(weeks=1)
     time = one_week_later.strftime('%Y-%m-%d %H:%M:%S')
 
     new_schedule = Schedule(
@@ -504,7 +502,7 @@ def riwayat():
     depression_level, anxiety_level, stress_level = calculate_levels()
     name = current_user.username
     ava = "/icons/pdf.png" 
-    date = datetime.utcnow().strftime('%d %B %Y')
+    date = datetime.datetime.utcnow().strftime('%d %B %Y')
     resdass = f"Stress = {stress_level} | Anxiety = {anxiety_level} | Depression = {depression_level}"
     resdsm = ""
     chathistory = f"{display_levels(depression_level, anxiety_level, stress_level)}" #harus ditambahkan fungsi khusus
@@ -541,7 +539,7 @@ def submit_response():
         first_consultation = Schedule.query.filter_by(user_id=current_user.id).first()
         if first_consultation is None:
             add_schedule()
-        
+            
         return jsonify(message="Response submitted successfully"), 201
     
     except Exception as e:
@@ -733,7 +731,7 @@ def users():
             updates['email'] = data['email']
         if 'birth' in data:
             try:
-                birth_date = datetime.strptime(data['birth'], '%d %B %Y')
+                birth_date = datetime.datetime.strptime(data['birth'], '%d %B %Y')
                 current_user.birth = birth_date
                 updates['birth'] = birth_date
             except ValueError:

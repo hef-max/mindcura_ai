@@ -64,15 +64,14 @@ export default function Consulting() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ answers: responses.map(Number) }),
-                credentials: "include",
+                credentials: "include"
             });
 
             if (res.ok) {
                 setTimeout(() => {
                     router.push('/avatar');
                     setIsLoading(false);
-                }, 5000);
-                // router.push('/avatar');
+                }, 6000);
             } else {
                 const data = await res.json();
                 setError(data.message || "An error occurred");

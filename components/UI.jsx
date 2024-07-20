@@ -63,8 +63,7 @@ export const UI = ({ hidden, ...props }) => {
     if (!loading && !message) {
       chat(text);
       if (input.current) input.current.value = "";
-      resetTranscript();
-      setConsultationCompleted(true); 
+      resetTranscript(); 
     }
   }, [loading, message, chat, resetTranscript]);
 
