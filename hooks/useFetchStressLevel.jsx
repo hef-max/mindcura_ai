@@ -8,7 +8,7 @@ const useFetchStressLevel = () => {
     useEffect(() => {
         const fetchStressLevel = async () => {
             try {
-                const response = await fetch("http://localhost:5001/api/stress_level", {
+                const response = await fetch("http://13.212.181.136:5001/api/stress_level", {
                     method: "GET",
                     credentials: 'include'
                 });
