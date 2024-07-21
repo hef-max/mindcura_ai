@@ -28,7 +28,7 @@ def create_app():
     # Configure CORS
     CORS(app, supports_credentials=True, resources={
         r"/*": {
-            "origins": ["http://13.212.181.136:3001/"]
+            "origins": ["http://localhost:3001/"]
         }
     })
 
