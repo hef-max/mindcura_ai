@@ -292,6 +292,11 @@ def get_dsm_explanation():
     return response
 
 
+@auth.route("/", methods=['GET'])
+def home():
+    return jsonify(messages="Selamat Datang"), 200
+
+
 @auth.route('/api/classify_lstm', methods=['POST'])
 def classify_lstm():
     if 'audio_file' not in request.files:
@@ -307,7 +312,6 @@ def classify_lstm():
     classify_value = {1: 'neutral', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'angry', 6: 'fear', 7: 'disgust', 8: 'surprise'}
     voice_classify = classify_value.get(emotion)
 
-    print("voice emotion:", voice_classify)
     return jsonify({"emotion": voice_classify}), 200
 
 
@@ -327,7 +331,6 @@ def classify():
     classify_value = {1: 'neutral', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'angry', 6: 'fear', 7: 'disgust', 8: 'surprise'}
     face_classify = classify_value.get(emotion)
 
-    print("face emotion:", face_classify)
     return jsonify({"emotion": face_classify}), 200
 
 
