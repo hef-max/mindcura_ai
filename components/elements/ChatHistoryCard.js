@@ -9,7 +9,7 @@ export default function ChatHistoryCard({ item }) {
     const handleDownload = async () => {
         console.log(item);
         try {
-            const response = await fetch(`http://13.212.181.136:5001/download_summary/${item.id}`, {
+            const response = await fetch(`http://localhost:5001/download_summary/${item.id}`, {
                 method: 'GET',
                 credentials: 'include',
             });

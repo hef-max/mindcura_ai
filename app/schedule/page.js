@@ -16,7 +16,7 @@ export default function Schedule() {
     React.useEffect(() => {
         const fetchScheduleList = async () => {
             try {
-                const res = await fetch("http://13.212.181.136:5001/api/schedule", {
+                const res = await fetch("http://localhost:5001/api/schedule", {
                     method: "GET",
                     credentials: 'include'
                 });

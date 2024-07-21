@@ -58,7 +58,7 @@ export default function Consulting() {
         }
 
         try {
-            const res = await fetch("http://13.212.181.136:5001/api/submit_response", {
+            const res = await fetch("http://localhost:5001/api/submit_response", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

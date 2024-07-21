@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from "react";
 
-const backendUrl = "http://13.212.181.136:5001/";
+const backendUrl = "http://localhost:5001/";
 
 const ChatContext = createContext();
 
