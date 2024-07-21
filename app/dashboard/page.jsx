@@ -28,7 +28,7 @@ export default function Dashboard() {
     const handleMoodClick = async (mood) => {
         setSelectedMood(mood);
         try {
-            const res = await fetch("http://localhost:5001/dashboard", {
+            const res = await fetch("http://13.212.181.136:5001/dashboard", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

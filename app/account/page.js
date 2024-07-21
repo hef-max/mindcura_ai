@@ -53,7 +53,7 @@ export default function Account() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://localhost:5001/logout", {
+            const res = await fetch("http://13.212.181.136:5001/logout", {
                 method: "GET",
                 credentials: 'include'
             });
@@ -92,7 +92,7 @@ export default function Account() {
         }
 
         try {
-            const res = await fetch("http://localhost:5001//api/users", {
+            const res = await fetch("http://13.212.181.136:5001//api/users", {
                 method: "POST",
                 credentials: 'include',
                 body: newFormData,
