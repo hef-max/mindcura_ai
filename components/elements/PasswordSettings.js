@@ -18,7 +18,7 @@ export default function PasswordSettings() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://13.212.181.136:5001/logout", {
+            const res = await fetch("https://backend.mindcura.net/logout", {
                 method: "GET",
                 credentials: 'include'
             });
@@ -44,7 +44,7 @@ export default function PasswordSettings() {
         }
 
         try {
-            const res = await fetch("http://13.212.181.136:5001/api/change_password", {
+            const res = await fetch("https://backend.mindcura.net/api/change_password", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
