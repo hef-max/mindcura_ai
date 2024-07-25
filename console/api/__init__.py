@@ -16,7 +16,7 @@ def create_app():
     app = Flask(__name__)
 
     app.secret_key = '_5#y2L"F4Q8z\n\xec]//'
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/mind"
+    app.config["MONGO_URI"] = "mongodb+srv://hefrykun10:WQaLHPWCztA3K3vl@cluster0.ujs9ich.mongodb.net/mind"
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mind.db'
     app.config['UPLOAD_FOLDER'] = os.path.join(PROJECT_ROOT, 'public', 'images')
     
