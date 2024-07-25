@@ -32,6 +32,8 @@ export default function LoginForm() {
                 body: JSON.stringify({ email, password }),
                 credentials: 'include'
             });
+
+            console.log(res);
             
             if (res.ok) {
                 router.push("/dashboard");

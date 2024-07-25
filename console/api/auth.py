@@ -6,12 +6,12 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 from email.mime.multipart import MIMEMultipart
 from werkzeug.utils import secure_filename
 from reportlab.lib.pagesizes import letter
-from google.oauth2 import service_account
+# from google.oauth2 import service_account
 from datetime import datetime, timedelta
 from google.cloud import texttospeech
 from email.mime.text import MIMEText
 from flask_pymongo import PyMongo
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pydub import AudioSegment
 from .models import *
 import tensorflow as tf
@@ -34,11 +34,11 @@ logging.getLogger('numba').setLevel(logging.WARNING)
 mongo = PyMongo()
 auth = Blueprint('auth', __name__)
 
-load_dotenv()
+# load_dotenv()
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-GOOGLE_APPLICATION_CREDENTIALS = os.path.join(ROOT, 'composed-task-240012-e4f73d9fcedf.json')
+# GOOGLE_APPLICATION_CREDENTIALS = ""
 
 cnn_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'model_v1.2.h5'))
 lstm_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'best_audio_model.h5'))
@@ -50,10 +50,12 @@ audio_path_mp3 = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.mp3')
 audio_path_wav = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.wav')
 audio_path_json = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.json')
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+# openai.api_key = os.environ["OPENAI_API_KEY"]
 
-credentials = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
-tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
+# openai.api_key = ""
+
+# credentials = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
+# tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
 
 
 #2gK@rT5!hL9^mD8*
@@ -185,10 +187,10 @@ def text_to_speech_google(text):
         speaking_rate=0.9 
     )
 
-    response = tts_client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
+    # response = tts_client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
     
-    with open(audio_path_mp3, "wb") as out:
-        out.write(response.audio_content)
+    # with open(audio_path_mp3, "wb") as out:
+        # out.write(response.audio_content)
 
     audio = AudioSegment.from_file(audio_path_mp3)
     audio.export(audio_path_wav, format='wav')
