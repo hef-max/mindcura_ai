@@ -36,8 +36,9 @@ export default function LoginForm() {
             console.log(res);
             
             if (res.ok) {
-                router.push("/dashboard");
-                return;
+                console.log("Login successfully");
+	        document.cookie = "auth-token=sample_token; path=/";
+                window.location.href = "/dashboard";
             } else {
                 setError("User invalid.");
             }

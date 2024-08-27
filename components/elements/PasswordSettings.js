@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Layout from "@/components/layouts/Layouts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAddressCard, faLock, faShieldAlt, faBell, faSignOutAlt, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faAddressCard, faLock, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import AlertDialogComponent from "@/components/elements/AlertDialog";
 
 export default function PasswordSettings() {
@@ -69,6 +69,13 @@ export default function PasswordSettings() {
         } catch (error) {
             console.error("Error updating password", error);
         }
+    };
+
+    const handleCancel = () => {
+        // Mengosongkan semua input
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
     };
 
     return (
@@ -143,7 +150,13 @@ export default function PasswordSettings() {
                         </div>
                         <div className="col-span-2 flex justify-end gap-4">
                             <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Update</button>
-                            <button type="button" className="bg-gray-300 py-2 px-4 rounded">Cancel</button>
+                            <button 
+                                type="button" 
+                                onClick={handleCancel} 
+                                className="bg-gray-300 py-2 px-4 rounded"
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -151,3 +164,4 @@ export default function PasswordSettings() {
         </Layout>
     );
 }
+
