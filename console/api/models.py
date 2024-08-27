@@ -11,7 +11,7 @@ class QuestionnaireResponseMongo:
     def __init__(self, user_id, answers):
         self.user_id = user_id
         self.answers = answers
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.datetime.now()
 
     def to_dict(self):
         return {

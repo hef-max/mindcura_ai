@@ -6,12 +6,12 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 from email.mime.multipart import MIMEMultipart
 from werkzeug.utils import secure_filename
 from reportlab.lib.pagesizes import letter
-# from google.oauth2 import service_account
+from google.oauth2 import service_account
 from datetime import datetime, timedelta
 from google.cloud import texttospeech
 from email.mime.text import MIMEText
 from flask_pymongo import PyMongo
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from pydub import AudioSegment
 from .models import *
 import tensorflow as tf
@@ -34,11 +34,9 @@ logging.getLogger('numba').setLevel(logging.WARNING)
 mongo = PyMongo()
 auth = Blueprint('auth', __name__)
 
-# load_dotenv()
+load_dotenv()
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-# GOOGLE_APPLICATION_CREDENTIALS = ""
 
 cnn_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'model_v1.2.h5'))
 lstm_model = tf.keras.models.load_model(os.path.join(PROJECT_ROOT, 'public', 'model', 'best_audio_model.h5'))
@@ -50,12 +48,11 @@ audio_path_mp3 = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.mp3')
 audio_path_wav = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.wav')
 audio_path_json = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.json')
 
-# openai.api_key = os.environ["OPENAI_API_KEY"]
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# openai.api_key = ""
-
-# credentials = service_account.Credentials.from_service_account_file(GOOGLE_APPLICATION_CREDENTIALS)
-# tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(PROJECT_ROOT, 'plexiform-bot-429503-t1-e30217e20ce5.json')
+credentials = service_account.Credentials.from_service_account_file(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
+tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
 
 
 #2gK@rT5!hL9^mD8*
@@ -153,7 +150,7 @@ def get_chatgpt_response(message):
     response = openai.ChatCompletion.create(
         model="ft:gpt-3.5-turbo-0125:personal:mindcura-llms6:9m1r41aE", 
         messages=[
-            {"role": "system", "content": "Kamu adalah asisten kesehatan mental"},
+            {"role": "system", "content": "Anda adalah seorang Asisten Kesehatan Mental bernama Mira"},
             {"role": "user", "content": message}
         ]
     )
@@ -169,7 +166,8 @@ def read_json_transcript(file_path):
         return json.load(json_file)
 
 def lip_sync_message():
-    subprocess.run(["rhubarb", "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
+    rhubarb_executable = os.path.join(PROJECT_ROOT, 'rhubarb', 'rhubarb')
+    subprocess.run([rhubarb_executable, "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
 
 def text_to_speech_google(text):
     text = text.replace('.', ', ').replace(':', ',').replace('*', '')
@@ -187,10 +185,10 @@ def text_to_speech_google(text):
         speaking_rate=0.9 
     )
 
-    # response = tts_client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
+    response = tts_client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
     
-    # with open(audio_path_mp3, "wb") as out:
-        # out.write(response.audio_content)
+    with open(audio_path_mp3, "wb") as out:
+        out.write(response.audio_content)
 
     audio = AudioSegment.from_file(audio_path_mp3)
     audio.export(audio_path_wav, format='wav')
@@ -397,7 +395,7 @@ def login():
                 login_user(user, remember=True)
                 return jsonify(message="Login Succesfully"), 200
             else:
-                jsonify(message="Incorrect password, try again."), 401
+                return jsonify(message="Incorrect password, try again."), 401
         
         hashed_password = user_data.get('password')
         if not check_password_hash(hashed_password, password):
@@ -405,7 +403,7 @@ def login():
             return jsonify(message="Invalid email or password"), 401
         
         else:
-            jsonify(message="Invalid email or password"), 401
+            return jsonify(message="Invalid email or password"), 401
 
     except Exception as e:
         logging.error(f"Error occurred: {e}")
@@ -800,9 +798,9 @@ def chatbot():
 
         if not user_message:
             depression_level, anxiety_level, stress_level = calculate_levels()
-            text_response = f"""Halo Saya Mira, asisten kesehatan mental Kamu.
+            text_response = f"""Halo Saya Mira, asisten kesehatan mental Anda.
               Saya akan membacakan hasil dari kusioner sebelumnya, {display_levels(depression_level, anxiety_level, stress_level)}.
-              Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Kamu?"""
+              Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Anda?"""
             initial_message = True
         
         if user_message:
