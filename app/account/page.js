@@ -60,6 +60,8 @@ export default function Account() {
 
             if (res.ok) {
                 console.log("Logout successfully");
+                document.cookie = "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                console.log(document.cookie);
                 router.push("/");
             } else {
                 console.log("Logout not successfully");
