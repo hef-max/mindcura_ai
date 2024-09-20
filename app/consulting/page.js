@@ -42,7 +42,6 @@ export default function Consulting() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
-
     const handleOptionChange = (index, value) => {
         const newResponses = [...responses];
         newResponses[index] = value;
@@ -52,6 +51,7 @@ export default function Consulting() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        
         if (responses.includes(null)) {
             setError("Please answer all questions.");
             return;
@@ -69,9 +69,9 @@ export default function Consulting() {
 
             if (res.ok) {
                 setTimeout(() => {
-                    router.push('/avatar');
                     setIsLoading(false);
-                }, 6000);
+                    router.push('/avatar');
+                }, 5000);
             } else {
                 const data = await res.json();
                 setError(data.message || "An error occurred");

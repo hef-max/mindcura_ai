@@ -23,9 +23,9 @@ const LoadingPage = ({ setLoadingComplete }) => {
     }, [setLoadingComplete]);
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-            <LoadingBar color="#f11946" progress={progress} />
-            <div className="text-2xl font-semibold mt-4">Loading...</div>
+        <div className="fixed inset-0 flex items-center justify-center bg-primary-100 z-50">
+            <LoadingBar color="#007bff" progress={progress} />
+            <div className="text-2xl font-semibold mt-4 text-black">Loading...</div>
         </div>
     );
 };

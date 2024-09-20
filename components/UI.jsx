@@ -54,7 +54,7 @@ export const UI = ({ hidden, ...props }) => {
       if (videoRef.current && videoRef.current.readyState === 4) {
         captureFrame();
       }
-    }, 5000); // Capture frame every 5 second
+    }, 5000);
 
     return () => clearInterval(intervalId);
   }, [videoRef, captureFrame]);
@@ -134,12 +134,12 @@ export const UI = ({ hidden, ...props }) => {
     const headphoneTimeout = setTimeout(() => {
       setShowHeadphoneWarning(false);
       setShowInstructions(true);
-    }, 5000); // hide headphone warning after 5 seconds
+    }, 5000);
 
     const instructionsTimeout = setTimeout(() => {
       setShowInstructions(false);
       setShowContent(true);
-    }, 15000); // hide instructions after 10 seconds
+    }, 15000);
 
     return () => {
       clearTimeout(headphoneTimeout);
@@ -167,10 +167,11 @@ export const UI = ({ hidden, ...props }) => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-center items-center p-4 flex-col pointer-events-none">
+      <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-center items-center p-4 flex-col pointer-events-none avatar-body avatar-body.greenScreen">
         {showHeadphoneWarning && (
             <div className="self-center backdrop-blur-md bg-primary-400 justify-items-center bg-opacity-80 p-5 rounded-lg">
-              <p className="text-center font-semibold">Direkomendasikan menggunakan headphone untuk pengalaman lebih baik
+              <p className="text-center font-semibold flex items-center justify-center gap-2">
+                Disarankan menggunakan headphone untuk pengalaman lebih baik
                 <Image src="/icons/headphones.png" alt="Step 0" width={20} height={20} className="h-auto w-auto"/>
               </p>
             </div>
@@ -193,7 +194,7 @@ export const UI = ({ hidden, ...props }) => {
           <div className="w-full flex flex-col items-end justify-center gap-4">
             <button
               onClick={() => setCameraZoomed(!cameraZoomed)}
-              className="pointer-events-auto bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-md"
+              className="pointer-events-auto bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-md avatar-button avatar-button:hover"
             >
               {cameraZoomed ? (
                 <svg
@@ -229,7 +230,7 @@ export const UI = ({ hidden, ...props }) => {
             </button>
           </div>
           <div className="flex items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto">
-            <video ref={videoRef} autoPlay muted className="hidden"/>
+            <video ref={videoRef} autoPlay muted className="hidden avatar-video"/>
             <input
               className="w-full placeholder:text-gray-800 placeholder:italic p-4 rounded-md bg-opacity-50 bg-white backdrop-blur-md"
               placeholder={transcript}
@@ -237,7 +238,7 @@ export const UI = ({ hidden, ...props }) => {
             />
           <button
               onClick={listening ? stopListening : startListening}
-              className={`bg-blue-500 hover:bg-blue-600 text-white p-4 px-10 font-semibold uppercase rounded-full ${
+              className={`bg-blue-500 hover:bg-blue-600 text-white p-4 px-10 font-semibold uppercase rounded-full avatar-button avatar-button:hover ${
                 loading || message ? "cursor-not-allowed opacity-30" : ""
               }`}
             >

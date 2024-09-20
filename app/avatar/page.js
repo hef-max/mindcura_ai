@@ -4,7 +4,6 @@ import Layout from "@/components/layouts/Layouts";
 import App from "@/public/App";
 import ReactDOM from 'react-dom/client';
 import { ChatProvider } from "@/hooks/useChat";
-import "./index.css";
 import 'regenerator-runtime/runtime';
 
 let root;

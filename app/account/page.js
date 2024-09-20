@@ -48,7 +48,7 @@ export default function Account() {
     }, [user]);
 
     const handleCancel = () => {
-        setFormData(initialData); // Reset the form to its initial data
+        setFormData(initialData);
     };
 
     const handleLogout = async () => {
@@ -61,7 +61,6 @@ export default function Account() {
             if (res.ok) {
                 console.log("Logout successfully");
                 document.cookie = "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                console.log(document.cookie);
                 router.push("/");
             } else {
                 console.log("Logout not successfully");
@@ -102,10 +101,9 @@ export default function Account() {
 
             if (res.ok) {
                 console.log("Update successfully");
-                setMessage("Update successful!");
                 setTimeout(() => {
-                    setMessage('');
-                }, 3000); // Hide message after 3 seconds
+                    setMessage('Update successful!');
+                }, 3000);
             } else {
                 console.log("Update not successful");
             }
@@ -133,7 +131,6 @@ export default function Account() {
     return (
         <Layout>
             <div className="w-full min-h-screen flex">
-                {/* Sidebar */}
                 <div className="w-1/4 bg-white shadow-md p-4">
                     <div className="flex flex-col items-center mb-6">
                         <Image 
@@ -177,7 +174,6 @@ export default function Account() {
                         </AlertDialogComponent>
                     </div>
                 </div>
-                {/* Main Content */}
                 <div className="w-3/4 bg-white p-6">
                     <h1 className="text-2xl font-bold mb-4">Account Settings</h1>
                     <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>

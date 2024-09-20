@@ -8,7 +8,6 @@ import {
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useChat } from "../hooks/useChat";
 import { Avatar } from "./Avatar";
-import { AmbientLight } from "three";
 
 const Dots = (props) => {
   const { loading } = useChat();
