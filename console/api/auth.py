@@ -13,6 +13,7 @@ from email.mime.text import MIMEText
 from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 from pydub import AudioSegment
+from io import BytesIO
 from .models import *
 import tensorflow as tf
 import numpy as np
@@ -23,6 +24,7 @@ import smtplib
 import librosa
 import base64
 import openai
+import boto3
 import json
 import cv2
 import os
@@ -50,12 +52,23 @@ audio_path_json = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.json
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
+# Konfigurasi AWS S3
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_REGION = os.getenv('AWS_REGION')
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
+
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION
+)
+
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(PROJECT_ROOT, 'plexiform-bot-429503-t1-e30217e20ce5.json')
 credentials = service_account.Credentials.from_service_account_file(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
 tts_client = texttospeech.TextToSpeechClient(credentials=credentials)
 
-
-#2gK@rT5!hL9^mD8*
 def hitung_usia(tanggal_lahir):
     tanggal_lahir = f'{tanggal_lahir}'
     tanggal_lahir = datetime.datetime.strptime(tanggal_lahir, "%Y-%m-%d %H:%M:%S")
@@ -71,7 +84,10 @@ def resume(text):
 
 def generate_pdf(consultation_id):
     consultation = ConsultationHistory.query.filter_by(id=consultation_id).first()
-    filename = f"consultation_summary_{consultation_id}.pdf"
+    filename = f"consultation_{consultation_id}.pdf"
+    
+    pdf_buffer = BytesIO()
+    
     document = SimpleDocTemplate(filename, pagesize=letter)
     styles = getSampleStyleSheet()
     
@@ -89,11 +105,9 @@ def generate_pdf(consultation_id):
     
     content = []
 
-    # Add Title
     content.append(Paragraph("Asesmen Klinis", title_style))
     content.append(Spacer(1, 12))
     
-    # Identitas Subjek
     content.append(Paragraph("Identitas Subjek", subtitle_style))
     content.append(Spacer(1, 12))
     content.append(Paragraph(f"Nama: {current_user.username}", custom_style))
@@ -104,20 +118,32 @@ def generate_pdf(consultation_id):
     content.append(Paragraph(f"Anak ke: {current_user.anakke}", custom_style))
     content.append(Spacer(1, 12))
     
-    # Hasil DASS-21
     content.append(Paragraph("Hasil DASS-21:", subtitle_style))
     content.append(Paragraph(f"{consultation.resdass} {consultation.resdsm}", custom_style))
     content.append(Spacer(1, 12))
 
-    # Hasil Wawancara
     content.append(Paragraph("Hasil Wawancara", subtitle_style))
     content.append(Spacer(1, 12))
     content.append(Paragraph(f"Kesimpulan: {get_dsm_explanation()}", custom_style))
 
-    # Build the PDF
+    document.build(content)
+
     document.build(content)
     
-    return filename
+    pdf_buffer.seek(0)
+    
+    try:
+        s3_client.upload_fileobj(
+            pdf_buffer, 
+            S3_BUCKET_NAME, 
+            secure_filename(filename),
+            ExtraArgs={'ContentType': 'application/pdf'}
+        )
+        return filename
+    
+    except Exception as e:
+        current_app.logger.error(f"Error uploading PDF to S3: {e}")
+        return f"Error uploading PDF to S3: {str(e)}"
 
 
 def save_summary(name, ava, date, resdass, resdsm, chathistory):
@@ -148,9 +174,9 @@ def save_summary(name, ava, date, resdass, resdsm, chathistory):
 
 def get_chatgpt_response(message):
     response = openai.ChatCompletion.create(
-        model="ft:gpt-3.5-turbo-0125:personal:mindcura-llms6:9m1r41aE", 
+        model="ft:gpt-4o-mini-2024-07-18:personal::A9kj7tNX", 
         messages=[
-            {"role": "system", "content": "Anda adalah seorang Asisten Kesehatan Mental bernama Mira"},
+            {"role": "system", "content": "Anda adalah seorang Asisten Kesehatan Mental bernama Mira yang bertujuan untuk Swamedikasi"},
             {"role": "user", "content": message}
         ]
     )
@@ -291,11 +317,9 @@ def get_dsm_explanation():
     response = get_chatgpt_response(question)
     return response
 
-
 @auth.route("/", methods=['GET'])
 def home():
     return jsonify(messages="Selamat Datang"), 200
-
 
 @auth.route('/api/classify_lstm', methods=['POST'])
 def classify_lstm():
@@ -409,7 +433,6 @@ def login():
         logging.error(f"Error occurred: {e}")
         return jsonify(message="An error occurred"), 500
     
-
 @auth.route('/logout')
 @login_required
 def logout():
@@ -471,6 +494,7 @@ def mood_history():
 @login_required
 def protected_route():
     return jsonify(message=f"Hello {current_user.username}, you are logged in!")
+
 
 def add_schedule():    
     status = 'danger'
@@ -586,6 +610,7 @@ def consultation_history():
             db.session.add(new_consultation)
             db.session.commit()
             return jsonify({"message": "Consultation history added successfully"}), 201
+        
         except Exception as e:
             return jsonify({"message": f"An error occurred: {e}"}), 500
 
@@ -597,7 +622,7 @@ def schedule():
         schedule = Schedule.query.filter_by(user_id=current_user.id).first()
 
         if schedule is None:
-            return jsonify(meesage="belum ada jadwal"), 500
+            return jsonify(meesage="Belum ada jadwal"), 500
 
         schedule_list = {
             "status": schedule.status,
@@ -625,6 +650,7 @@ def daily_activity():
 
     elif request.method == 'POST':
         data = request.get_json()
+
         title = data.get('title')
         subtitle = data.get('subtitle')
         imageUrl = data.get('imageUrl')
@@ -725,50 +751,77 @@ def users():
     elif request.method == 'POST':
         data = request.form
         updates = {}
-
+        
         if 'username' in data:
             current_user.username = data['username']
             updates['username'] = data['username']
+        
         if 'email' in data:
             current_user.email = data['email']
             updates['email'] = data['email']
+        
         if 'birth' in data:
             try:
                 birth_date = datetime.datetime.strptime(data['birth'], '%d %B %Y')
                 current_user.birth = birth_date
                 updates['birth'] = birth_date
+
             except ValueError:
                 return jsonify({'message': 'Invalid date format. Use "DD Month YYYY".'}), 400
+            
         if 'address' in data:
             current_user.address = data['address']
             updates['address'] = data['address']
+        
         if 'number' in data:
             current_user.number = data['number']
             updates['number'] = data['number']
+        
         if 'jeniskelamin' in data:
             current_user.jeniskelamin = data['jeniskelamin']
             updates['jeniskelamin'] = data['jeniskelamin']
+        
         if 'univ' in data:
             current_user.univ = data['univ']
             updates['univ'] = data['univ']
+        
         if 'prodi' in data:
             current_user.prodi = data['prodi']
             updates['prodi'] = data['prodi']
+        
         if 'npm' in data:
             current_user.npm = data['npm']
             updates['npm'] = data['npm']
+        
         if 'anakke' in data:
             current_user.anakke = data['anakke']
             updates['anakke'] = data['anakke']
+
         if 'myfiles' in request.files:
             file = request.files['myfiles']
+            
             if file:
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-                file.save(file_path)
-                relative_file_path = f"/images/{filename}"
-                current_user.myfiles = relative_file_path
-                updates['myfiles'] = relative_file_path
+                file_buffer = BytesIO(file.read())
+
+                try:
+                    s3_client.upload_fileobj(
+                        file_buffer,
+                        S3_BUCKET_NAME,
+                        filename,
+                        ExtraArgs={'ContentType': file.content_type}
+                    )
+                    
+                    file_url = f"https://{S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{filename}"
+                    
+                    current_user.myfiles = file_url
+                    updates['myfiles'] = file_url
+                    
+                    return jsonify({"message": "Profile updated successfully"}), 200
+                
+                except Exception as e:
+                    return jsonify({"error": f"Error uploading file: {str(e)}"}), 500
+
         if 'password' in data:
             hashed_password = generate_password_hash(data['password'])
             current_user.password = hashed_password
@@ -875,7 +928,6 @@ def download_summary_endpoint(consultation_id):
     return send_file(f'../{pdf_path}', as_attachment=True, download_name=f'api/consultation_summary_{consultation_id}.pdf', mimetype='application/pdf')
 
     
-
 @auth.route('/api/check_questionnaire', methods=['GET'])
 @login_required
 def check_questionnaire():

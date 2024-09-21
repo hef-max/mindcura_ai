@@ -2,6 +2,8 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_login import LoginManager
+from dotenv import load_dotenv
+
 from .auth import auth as auth_blueprint
 from .auth import mongo
 from .models import User, db
@@ -9,14 +11,16 @@ import os
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
+load_dotenv()
+
 migrate = Migrate()
 login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
 
-    app.secret_key = '_5#y2L"F4Q8z\n\xec]//'
-    app.config["MONGO_URI"] = "mongodb+srv://hefrykun10:WQaLHPWCztA3K3vl@cluster0.ujs9ich.mongodb.net/mind"
+    app.secret_key = os.environ.get("SECRET_KEY") 
+    app.config["MONGO_URI"] = os.environ.get("MONGO_URI") 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mind.db'
     app.config['UPLOAD_FOLDER'] = os.path.join(PROJECT_ROOT, 'public', 'images')
     
@@ -25,7 +29,6 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    # Configure CORS
     CORS(app, supports_credentials=True, resources={
         r"/*": {
             "origins": ["*"]
