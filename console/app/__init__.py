@@ -3,15 +3,14 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_login import LoginManager
 from dotenv import load_dotenv
-
-from .auth import auth as auth_blueprint
 from .auth import mongo
+from .auth import auth as auth_blueprint
 from .models import User, db
 import os
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-
 load_dotenv()
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 migrate = Migrate()
 login_manager = LoginManager()
@@ -31,7 +30,7 @@ def create_app():
 
     CORS(app, supports_credentials=True, resources={
         r"/*": {
-            "origins": ["*"]
+            "origins": ["*", "http://localhost:3000/"]
         }
     })
 

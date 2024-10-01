@@ -2,10 +2,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
 from sqlalchemy.orm import relationship
+from flask_pymongo import PyMongo
 import datetime
 
+mongo = PyMongo()
 db = SQLAlchemy()
-
 
 class QuestionnaireResponseMongo:
     def __init__(self, user_id, answers):
