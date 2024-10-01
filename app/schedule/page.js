@@ -16,7 +16,7 @@ export default function Schedule() {
     React.useEffect(() => {
         const fetchScheduleList = async () => {
             try {
-                const res = await fetch("https://backend.mindcura.net/api/schedule", {
+                const res = await fetch("http://localhost:5001/api/schedule", {
                     method: "GET",
                     credentials: 'include'
                 });
