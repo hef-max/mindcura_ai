@@ -25,7 +25,7 @@ export const UI = ({ hidden, ...props }) => {
     formData.append('file', frame, 'frame.jpg');
 
     try {
-      const response = await fetch('https://backend.mindcura.net/classify', {
+      const response = await fetch('http://localhost:5001/api/classify_cnn', {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -110,25 +110,25 @@ export const UI = ({ hidden, ...props }) => {
     stopRecording();
   }, [handleVoiceInput, stopRecording]);
 
-  const processAudio = useCallback(async () => {
-    const blob = new Blob(audioChunks, { type: 'audio/wav' });
-    const formData = new FormData();
-    formData.append('audio_file', blob, 'audio.wav');
+  // const processAudio = useCallback(async () => {
+  //   const blob = new Blob(audioChunks, { type: 'audio/wav' });
+  //   const formData = new FormData();
+  //   formData.append('audio_file', blob, 'audio.wav');
 
-    try {
-      const response = await fetch('https://backend.mindcura.net/api/classify_lstm', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
+  //   try {
+  //     const response = await fetch('http://localhost:5001/api/classify_lstm', {
+  //       method: 'POST',
+  //       body: formData,
+  //       credentials: 'include',
+  //     });
 
-      const result = await response.json();
-      setLstmPrediction(result.emotion);
+  //     const result = await response.json();
+  //     setLstmPrediction(result.emotion);
 
-    } catch (error) {
-      console.error('Error making LSTM prediction:', error);
-    }
-  }, [audioChunks]);
+  //   } catch (error) {
+  //     console.error('Error making LSTM prediction:', error);
+  //   }
+  // }, [audioChunks]);
 
   useEffect(() => {
     const headphoneTimeout = setTimeout(() => {
@@ -147,11 +147,11 @@ export const UI = ({ hidden, ...props }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isRecording) {
-      processAudio();
-    }
-  }, [isRecording, processAudio]);
+  // useEffect(() => {
+  //   if (!isRecording) {
+  //     processAudio();
+  //   }
+  // }, [isRecording, processAudio]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn&apos;t support speech recognition.</span>;
@@ -167,7 +167,7 @@ export const UI = ({ hidden, ...props }) => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-center items-center p-4 flex-col pointer-events-none avatar-body avatar-body.greenScreen">
+      <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-center items-center p-4 flex-col pointer-events-none avatar-body.greenScreen">
         {showHeadphoneWarning && (
             <div className="self-center backdrop-blur-md bg-primary-400 justify-items-center bg-opacity-80 p-5 rounded-lg">
               <p className="text-center font-semibold flex items-center justify-center gap-2">
@@ -188,7 +188,7 @@ export const UI = ({ hidden, ...props }) => {
             </div>
           )}
       </div>
-      <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-between p-4 flex-col pointer-events-none">
+      <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-between p-4 flex-col pointer-events-none avatar-body.greenScreen">
         {showContent && (
           <>
           <div className="w-full flex flex-col items-end justify-center gap-4">

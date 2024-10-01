@@ -85,7 +85,7 @@ export default function RegisterForm() {
 
         try {
             
-            const res = await fetch("https://backend.mindcura.net/register", {
+            const res = await fetch("http://localhost:5001/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

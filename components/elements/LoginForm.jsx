@@ -24,7 +24,7 @@ export default function LoginForm() {
         e.preventDefault();
 
         try {
-            const res = await fetch("https://backend.mindcura.net/login", {
+            const res = await fetch("http://localhost:5001/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -32,12 +32,10 @@ export default function LoginForm() {
                 body: JSON.stringify({ email, password }),
                 credentials: 'include'
             });
-
-            console.log(res);
             
             if (res.ok) {
                 console.log("Login successfully");
-	        document.cookie = "auth-token=sample_token; path=/";
+                document.cookie = "auth-token=sample_token; path=/";
                 window.location.href = "/dashboard";
             } else {
                 setError("User invalid.");
