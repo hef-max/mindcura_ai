@@ -22,6 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('numba').setLevel(logging.WARNING)
 
 auth = Blueprint('auth', __name__)
+class_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'surprise', 'sad']
 
 @auth.route("/", methods=['GET'])
 def home():
@@ -39,7 +40,7 @@ def classify_lstm():
 
     emotion, V_Olstm = classify_voice_emotion(audio_file_path) 
 
-    classify_value = {1: 'neutral', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'angry', 6: 'fear', 7: 'disgust', 8: 'surprise'}
+    classify_value = {1: 'neutral', 2: 'happy', 3: 'sad', 4: 'angry', 5: 'fear', 6: 'disgust', 7: 'surprise'}
     voice_classify = classify_value.get(emotion)
 
     return jsonify({"emotion": voice_classify}), 200
@@ -58,8 +59,8 @@ def classify_cnn():
     image = cv2.imread(file_path)
     emotion, V_Ocnn = classify_face_emotion(image)
 
-    classify_value = {1: 'neutral', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'angry', 6: 'fear', 7: 'disgust', 8: 'surprise'}
-    face_classify = classify_value.get(emotion)
+    # classify_value = {1: 'neutral', 2: 'happy', 3: 'sad', 4: 'angry', 5: 'fear', 6: 'disgust', 7: 'surprise'}
+    face_classify = class_labels[emotion]
 
     return jsonify({"emotion": face_classify}), 200
 
@@ -521,27 +522,29 @@ def chatbot():
               Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Anda?"""
             initial_message = True
         
-        if user_message:
-            text_response = get_chatgpt_response(user_message)
+        # if user_message:
+        text_response = get_chatgpt_response(user_message)
         
-        user_chat_history = ChatHistory(
-            role='user',
-            text=user_message or "Generated DASS-21 levels"
-        )
-        db.session.add(user_chat_history)
-        db.session.commit()
+        # user_chat_history = ChatHistory(
+        #     role='user',
+        #     text=user_message or "Generated DASS-21 levels"
+        # )
 
-        user_dict = {
-            "role": user_chat_history.role,
-            "text": user_chat_history.text,
-            "datetime": user_chat_history.datetime
-        }
-        mongo.db.ChatHistory.insert_one(user_dict)
+        # db.session.add(user_chat_history)
+        # db.session.commit()
+
+        # user_dict = {
+        #     "role": user_chat_history.role,
+        #     "text": user_chat_history.text,
+        #     "datetime": user_chat_history.datetime
+        # }
+        # mongo.db.ChatHistory.insert_one(user_dict)
 
         chatbot_chat_history = ChatHistory(
             role='chatbot',
             text=text_response
         )
+
         db.session.add(chatbot_chat_history)
         db.session.commit()
 
@@ -550,6 +553,7 @@ def chatbot():
             "text": text_response,
             "datetime": chatbot_chat_history.datetime
         }
+
         mongo.db.ChatHistory.insert_one(chat_dict)
 
         text_to_speech_elevenlabs(text=text_response)
