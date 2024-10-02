@@ -10,6 +10,7 @@ export default function Activity() {
     const [moodStats, setMoodStats] = React.useState([]);
     const [consultationHistory, setConsultationHistory] = React.useState([]);
     const [latestConsultation, setLatestConsultation] = React.useState(null);
+    const scrollRef = React.useRef(null);
 
     React.useEffect(() => {
         const fetchMoodHistory = async () => {
@@ -61,6 +62,12 @@ export default function Activity() {
         fetchMoodHistory();
         fetchConsultationHistory();
     }, []);
+
+    React.useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollLeft = scrollRef.current.scrollWidth; // Scroll to the rightmost position
+        }
+    }, [moodStats]);
     
 
     return (
@@ -74,22 +81,26 @@ export default function Activity() {
                     </div>
                     {/* Blok Mood History */}
                     <div className="flex w-full w-full h-auto rounded-lg bg-primary-200 items-center p-2 flex-col gap-2">
-                        <div className="flex w-full justify-between mb-2">
-                            <h4 className="font-medium text-sm">Riwayat Mood</h4>
+                        <div className="flex w-full justify-between mb-1">
+                            <h4 className="font-medium font-semibold text-m">Riwayat Mood</h4>
                         </div>
-                        <div className="flex flex-wrap gap-2 justify-start w-full">
-                            {moodStats.map((mood, index) => (
-                                <div key={index} className={`p-2 rounded-lg flex flex-col items-center ${mood.color}`}>
-                                    <Image
-                                        src={`/icons/${mood.name}.png`}
-                                        alt='mood day'
-                                        width={25}
-                                        height={28}
-                                        className="w-[25px] h-[28px] object-contain"
-                                    />
-                                    <h4 className="font-semibold text-xs">{mood.day}</h4>
-                                </div>
-                            ))}
+                        {/* make it show for a week*/}
+                        {/* Scrollable mood history for a week */}
+                        <div ref={scrollRef} className="w-full h-full overflow-x-scroll scroll-hidden">
+                            <div className="flex flex-row-reverse gap-2 w-[640px]"> 
+                                {moodStats.map((mood, index) => (
+                                    <div key={index} className={`p-2 rounded-lg flex flex-col w-[80px] items-center ${mood.color}`}>
+                                        <Image
+                                            src={`/icons/${mood.name}.png`}
+                                            alt='mood day'
+                                            width={25}
+                                            height={28}
+                                            className="w-[25px] h-[28px] object-contain"
+                                        />
+                                        <h4 className="font-semibold text-xs">{mood.day}</h4>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
