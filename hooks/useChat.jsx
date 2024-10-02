@@ -1,15 +1,13 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from "react";
 
-const backendUrl = "http://localhost:5001/";
-
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
   const chat = async (message) => {
     setLoading(true);
 
-    const data = await fetch(`${backendUrl}/chat`, {
+    const data = await fetch(`$http://localhost:5001/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
