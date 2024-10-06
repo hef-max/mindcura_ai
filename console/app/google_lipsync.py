@@ -28,7 +28,7 @@ def read_json_transcript(file_path):
 
 def lip_sync_message():
     rhubarb_executable = os.path.join(PROJECT_ROOT, 'rhubarb', 'rhubarb')
-    subprocess.run(['rhubarb', "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
+    subprocess.run([rhubarb_executable, "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
 
 def text_to_speech_google(text):
     text = text.replace('.', ', ').replace(':', ',').replace('*', '')

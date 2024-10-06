@@ -165,7 +165,7 @@ export default function Account() {
                                 alertDialogCancel="Cancel"
                                 onActionClick={handleLogout}
                                 alertDialogTitle="Apakah Anda yakin ingin keluar dari halaman ini?"
-                                actionButtonColor="bg-danger"
+                                actionButtonColor="bg-primary-600"
                             >
                             <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer" >
                                 <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5" />

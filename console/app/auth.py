@@ -2,7 +2,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, jsonify, request, send_file
 from .models import *
-from .cnn_lstm import classify_voice_emotion, classify_face_emotion
+# from .cnn_lstm import classify_voice_emotion, classify_face_emotion
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from io import BytesIO
@@ -38,12 +38,12 @@ def classify_lstm():
     audio_file_path = os.path.join("uploads", filename)
     audio_file.save(audio_file_path)
 
-    emotion, V_Olstm = classify_voice_emotion(audio_file_path) 
+    # emotion, V_Olstm = classify_voice_emotion(audio_file_path) 
 
-    classify_value = {1: 'neutral', 2: 'happy', 3: 'sad', 4: 'angry', 5: 'fear', 6: 'disgust', 7: 'surprise'}
-    voice_classify = classify_value.get(emotion)
+    # classify_value = {1: 'neutral', 2: 'happy', 3: 'sad', 4: 'angry', 5: 'fear', 6: 'disgust', 7: 'surprise'}
+    # voice_classify = classify_value.get(emotion)
 
-    return jsonify({"emotion": voice_classify}), 200
+    return jsonify({"emotion": "voice_classify"}), 200
 
 
 @auth.route('/api/classify_cnn', methods=['POST'])
@@ -57,12 +57,12 @@ def classify_cnn():
     file.save(file_path)
 
     image = cv2.imread(file_path)
-    emotion, V_Ocnn = classify_face_emotion(image)
+    # emotion, V_Ocnn = classify_face_emotion(image)
 
     # classify_value = {1: 'neutral', 2: 'happy', 3: 'sad', 4: 'angry', 5: 'fear', 6: 'disgust', 7: 'surprise'}
-    face_classify = class_labels[emotion]
+    # face_classify = class_labels[emotion]
 
-    return jsonify({"emotion": face_classify}), 200
+    return jsonify({"emotion": "face_classify"}), 200
 
 
 @auth.route('/register', methods=['POST'])
