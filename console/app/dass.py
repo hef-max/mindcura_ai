@@ -8,6 +8,7 @@ from .models import mongo
 def calculate_dass21():
     user_id = str(current_user.id)
     qna = QuestionnaireResponse.query.filter_by(user_id=user_id).first()
+
     anxiety_items = [qna.q2, qna.q5, qna.q8, qna.q11, qna.q16, qna.q19, qna.q21]
     depression_items = [qna.q3, qna.q6, qna.q10, qna.q14, qna.q17]
     stress_items = [qna.q1, qna.q4, qna.q7, qna.q9, qna.q12, qna.q13, qna.q15, qna.q18, qna.q20]
@@ -16,29 +17,29 @@ def calculate_dass21():
     anxiety = sum([int(item) for item in anxiety_items]) * 2
     stress = sum([int(item) for item in stress_items]) * 2
 
-    return get_gpt_explanation(depression, anxiety, stress)
+    return depression, anxiety, stress
 
 def display_levels(depression, anxiety, stress):
     if depression < 14:
-        depression_result = 'Depresi: Ringan'
+        depression_result = 'Depresi Ringan'
     elif depression < 20:
-        depression_result = 'Depresi: Sedang'
+        depression_result = 'Depresi Sedang'
     else:
-        depression_result = 'Depresi: Berat'
+        depression_result = 'Depresi Berat'
 
     if anxiety <= 9:
-        anxiety_result = 'Kecemasan: Ringan'
+        anxiety_result = 'Kecemasan Ringan'
     elif anxiety <= 14:
-        anxiety_result = 'Kecemasan: Sedang'
+        anxiety_result = 'Kecemasan Sedang'
     else:
-        anxiety_result = 'Kecemasan: Berat'
+        anxiety_result = 'Kecemasan Berat'
 
     if stress <= 18:
-        stress_result = 'Stres: Ringan'
+        stress_result = 'Stres Ringan'
     elif stress <= 25:
-        stress_result = 'Stres: Sedang'
+        stress_result = 'Stres Sedang'
     else:
-        stress_result = 'Stres: Berat'
+        stress_result = 'Stres Berat'
 
     explanation = get_gpt_explanation(depression_result, anxiety_result, stress_result)
 
@@ -59,11 +60,11 @@ def user_history(result_dass=False, result_dsm=None):
     
     name = current_user.username
     ava = "/icons/pdf.png" 
-    date = datetime.datetime.utcnow().strftime('%d %B %Y')
+    date = datetime.utcnow().strftime('%d %B %Y')
     
-    # chathistory = f"{display_levels(depression, anxiety, stress)}" if result_dsm != "DSM result pending" else "Consultation not completed yet"
+    chathistory = f"{display_levels(depression, anxiety, stress)}" if result_dsm != "DSM result pending" else "Consultation not completed yet"
     
-    # save_summary(name, ava, date, result_dass, result_dsm, chathistory)
+    save_summary(name, ava, date, result_dass, result_dsm, chathistory)
     
     return jsonify(message="success")
 

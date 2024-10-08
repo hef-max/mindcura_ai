@@ -8,7 +8,7 @@ def add_schedule():
     status = 'danger'
     imageUrl = '/images/konsultasi-notif.jpg'
     scheduleTitle = 'Konsultasi Mingguan'
-    one_week_later = datetime.datetime.utcnow() + timedelta(weeks=1)
+    one_week_later = datetime.utcnow() + timedelta(weeks=1)
     time = one_week_later.strftime('%Y-%m-%d %H:%M:%S')
 
     new_schedule = Schedule(

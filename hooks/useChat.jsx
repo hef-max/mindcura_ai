@@ -7,7 +7,7 @@ export const ChatProvider = ({ children }) => {
   const chat = async (message) => {
     setLoading(true);
 
-    const data = await fetch(`$http://localhost:5001/chat`, {
+    const data = await fetch(`https://backend.mindcura.net/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

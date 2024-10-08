@@ -1,7 +1,7 @@
 
-from google.oauth2 import service_account
-from google.cloud import texttospeech
-from pydub import AudioSegment
+# from google.oauth2 import service_account
+# from google.cloud import texttospeech
+# from pydub import AudioSegment
 import subprocess
 import base64
 import json
@@ -27,8 +27,8 @@ def read_json_transcript(file_path):
         return json.load(json_file)
 
 def lip_sync_message():
-    rhubarb_executable = os.path.join(PROJECT_ROOT, 'rhubarb', 'rhubarb')
-    subprocess.run([rhubarb_executable, "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
+    rhubarb_executable = os.path.join(PROJECT_ROOT, "rhubarb", "rhubarb")
+    subprocess.run(["rhubarb", "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"])
 
 # def text_to_speech_google(text):
 #     text = text.replace('.', ', ').replace(':', ',').replace('*', '')

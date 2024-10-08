@@ -22,7 +22,6 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('numba').setLevel(logging.WARNING)
 
 auth = Blueprint('auth', __name__)
-class_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'surprise', 'sad']
 
 @auth.route("/", methods=['GET'])
 def home():
@@ -56,6 +55,8 @@ def classify_cnn():
     file_path = os.path.join('uploads', filename)
     file.save(file_path)
 
+    class_labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'surprise', 'sad']
+
     image = cv2.imread(file_path)
     # emotion, V_Ocnn = classify_face_emotion(image)
 
@@ -72,7 +73,7 @@ def register():
         username = user_data.get('username')
         password = generate_password_hash(user_data.get('password'))
         email = user_data.get('email')
-        birth = datetime.datetime.strptime(user_data.get('birth'), '%Y-%m-%d')
+        birth = datetime.strptime(user_data.get('birth'), '%Y-%m-%d')
         jeniskelamin = user_data.get('JK')
 
         new_user = User(
@@ -145,6 +146,7 @@ def login():
 def logout():
     logout_user()
     return jsonify(message="Logout successful"), 200
+
 
 @auth.route('/dashboard', methods=['POST'])
 @login_required
@@ -220,13 +222,13 @@ def submit_response():
             q11=answers[10], q12=answers[11], q13=answers[12], q14=answers[13], q15=answers[14],
             q16=answers[15], q17=answers[16], q18=answers[17], q19=answers[18], q20=answers[19], q21=answers[20]
         )
+
         db.session.add(response)
         db.session.commit()
         
         response_mongo = QuestionnaireResponseMongo(user_id=current_user.id, answers=answers)
         mongo.db.questionnaire_responses.insert_one(response_mongo.to_dict())
 
-        # pisahkan antara hasil dari dass21 dan dsm
         user_history(result_dass=True)
         
         first_consultation = Schedule.query.filter_by(user_id=current_user.id).first()
@@ -270,11 +272,13 @@ def consultation_history():
                 date=data['date'],
                 resdass=data['resdass'],
                 resdsm=data['resdsm'],
-                chathistory=data['chathistory'], # tidak perlu
+                chathistory=data['chathistory'], 
                 user_id=current_user.id
             )
+            
             db.session.add(new_consultation)
             db.session.commit()
+
             return jsonify({"message": "Consultation history added successfully"}), 201
         
         except Exception as e:
@@ -332,6 +336,7 @@ def daily_activity():
             status=status,
             user_id=current_user.id
         )
+
         db.session.add(new_activity)
         db.session.commit()
 
@@ -428,7 +433,7 @@ def users():
         
         if 'birth' in data:
             try:
-                birth_date = datetime.datetime.strptime(data['birth'], '%d %B %Y')
+                birth_date = datetime.strptime(data['birth'], '%d %B %Y')
                 current_user.birth = birth_date
                 updates['birth'] = birth_date
 
@@ -502,7 +507,7 @@ def users():
     return jsonify({'message': 'Invalid method'}), 405
 
 
-@auth.route('/chat', methods=['POST', 'GET'])
+@auth.route('/chat', methods=['POST'])
 @login_required
 def chatbot():
     if request.method == "POST":
@@ -515,30 +520,30 @@ def chatbot():
         text_response = ""
         initial_message = False
 
-        if not user_message:
-            depression_level, anxiety_level, stress_level = calculate_dass21()
-            text_response = f"""Halo Saya Mira, asisten kesehatan mental Anda.
-              Saya akan membacakan hasil dari kusioner sebelumnya, {display_levels(depression_level, anxiety_level, stress_level)}.
+        if not user_message and initial_message == False:
+            depression, anxiety, stress = calculate_dass21()
+            text_response = f"""Halo Saya Mira asisten kesehatan mental Anda.
+              Saya akan membacakan hasil dari kusioner sebelumnya, {display_levels(depression, anxiety, stress)}.
               Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Anda?"""
             initial_message = True
         
-        # if user_message:
-        text_response = get_chatgpt_response(user_message)
+        if user_message:
+            text_response = get_chatgpt_response(user_message)
         
-        # user_chat_history = ChatHistory(
-        #     role='user',
-        #     text=user_message or "Generated DASS-21 levels"
-        # )
+        user_chat_history = ChatHistory(
+            role='user',
+            text=user_message or "Generated DASS-21 levels"
+        )
 
-        # db.session.add(user_chat_history)
-        # db.session.commit()
+        db.session.add(user_chat_history)
+        db.session.commit()
 
-        # user_dict = {
-        #     "role": user_chat_history.role,
-        #     "text": user_chat_history.text,
-        #     "datetime": user_chat_history.datetime
-        # }
-        # mongo.db.ChatHistory.insert_one(user_dict)
+        user_dict = {
+            "role": user_chat_history.role,
+            "text": user_chat_history.text,
+            "datetime": user_chat_history.datetime
+        }
+        mongo.db.ChatHistory.insert_one(user_dict)
 
         chatbot_chat_history = ChatHistory(
             role='chatbot',

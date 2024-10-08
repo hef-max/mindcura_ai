@@ -25,7 +25,7 @@ export const UI = ({ hidden, ...props }) => {
     formData.append('file', frame, 'frame.jpg');
 
     try {
-      const response = await fetch('http://localhost:5001/api/classify_cnn', {
+      const response = await fetch('https://backend.mindcura.net/api/classify_cnn', {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -116,7 +116,7 @@ export const UI = ({ hidden, ...props }) => {
   //   formData.append('audio_file', blob, 'audio.wav');
 
   //   try {
-  //     const response = await fetch('http://localhost:5001/api/classify_lstm', {
+  //     const response = await fetch('https://backend.mindcura.net/api/classify_lstm', {
   //       method: 'POST',
   //       body: formData,
   //       credentials: 'include',

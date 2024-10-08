@@ -16,10 +16,10 @@ const QUESTIONS = [
     "Saya merasa sulit untuk beristirahat",
     "Saya merasa bibir saya sering kering",
     "Saya sama sekali tidak dapat merasakan perasaan positif",
-    "Saya mengalami kesulitan bernafas (misalnya: seringkali terengah-engah atau tidak dapat bernafas padahal tidak melakukan aktivitas fisik sebelumnya)",
+    "Saya mengalami kesulitan bernafas (padahal tidak melakukan aktivitas fisik sebelumnya)",
     "Saya merasa sulit untuk meningkatkan inisiatif dalam melakukan sesuatu",
     "Saya cenderung bereaksi berlebihan terhadap suatu situasi",
-    "Saat merasa gemetar (misalnya: pada tangan)",
+    "Saya merasa gemetar pada tangan",
     "Saya merasa telah menghabiskan banyak energi untuk merasa cemas",
     "Saya merasa khawatir dengan situasi dimana saya mungkin menjadi panik dan mempermalukan diri sendiri",
     "Saya merasa tidak ada hal yang dapat diharapkan di masa depan",
@@ -31,7 +31,7 @@ const QUESTIONS = [
     "Saya tidak merasa antusias dalam hal apapun",
     "Saya merasa bahwa saya tidak berharga sebagai seorang manusia",
     "Saya merasa bahwa saya mudah tersinggung", 
-    "Saya menyadari kegiatan jantung, walaupun saya tidak sehabis melakukan aktivitas fisik (misalnya: merasa detak jantung meningkat atau melemah)",
+    "Saya menyadari kegiatan jantung, walaupun saya tidak sehabis melakukan aktivitas fisik (merasa detak jantung meningkat atau melemah)",
     "Saya merasa takut tanpa alasan yang jelas",
     "Saya merasa bahwa hidup tidak berarti"
 ];
@@ -58,7 +58,7 @@ export default function Consulting() {
         }
 
         try {
-            const res = await fetch("http://localhost:5001/api/submit_response", {
+            const res = await fetch("https://backend.mindcura.net/api/submit_response", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -84,18 +84,18 @@ export default function Consulting() {
     return (
         <Layout>
             {isLoading && <LoadingPage setLoadingComplete={() => setIsLoading(false)} />}
-            <div className={`flex justify-center w-screen h-screen px-2 py-5`}>
+            <div className={`flex justify-center w-screen h-screen px-2 py-5 font-sans`}>
                 <div className="flex flex-col gap-4 h-[2550px] shadow-lg p-5 rounded-lg border-t-4 border-primary-400">
                     <h1 className="text-2xl font-semibold my-4">KUISIONER DEPRESSION ANXIETY STRESS SCALE 21 (DASS-21)</h1>
                     <p>Petunjuk Pengisian: </p>
-                    <p>Kuesioner ini terdiri dari berbagai pernyataan yang mungkin sesuai dengan pengalaman anda dalam menghadapi situasi hidup sehari-hari. Terdapat empat pilihan jawaban yang disediakan untuk setiap pernyataan yaitu:</p>
+                    <p>Kuesioner ini terdiri dari berbagai pernyataan yang mungkin sesuai dengan pengalaman anda dalam menghadapi situasi sehari-hari. Terdapat empat pilihan jawaban yang disediakan untuk setiap pernyataan yaitu:</p>
                     <ul>
                         <li>0 : Tidak sesuai dengan saya sama sekali, atau tidak pernah</li>
                         <li>1 : Sesuai dengan saya sampai batas yang dapat dipertimbangkan, atau kadang-kadang (pernah mengalami 1-2 kali)</li>
                         <li>2 : Sesuai dengan saya sampai tingkat tertentu, atau Sering (pernah mengalami 3-4 kali)</li>
                         <li>3 : Sangat sesuai dengan saya, atau sering sekali (pernah mengalami lebih dari 4 kali)</li>
                     </ul>
-                    <p>Selanjutnya, anda diminta untuk menjawab dengan cara memberi tanda silang (x) pada salah satu kolom yang paling sesuai dengan pengalaman anda selama satu minggu belakangan ini.
+                    <p>Selanjutnya, anda diminta untuk menjawab dengan cara memberi memilih pada salah satu kolom yang paling sesuai dengan pengalaman anda selama satu minggu belakangan ini.
                         Tidak ada jawaban yang benar ataupun salah, karena itu isilah sesuai dengan keadaan diri anda yang sesungguhnya, yaitu berdasarkan jawaban pertama yang terlintas dalam pikiran anda.
                     </p>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
