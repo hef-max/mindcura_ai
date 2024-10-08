@@ -24,7 +24,7 @@ export default function LoginForm() {
         e.preventDefault();
 
         try {
-            const res = await fetch("https://backend.mindcura.net/ login", {
+            const res = await fetch("https://backend.mindcura.net/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

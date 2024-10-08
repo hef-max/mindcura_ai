@@ -26,7 +26,7 @@ def create_app():
 
     CORS(app, supports_credentials=True, resources={
         r"/*": {
-            "origins": ["*"]
+            "origins": ["*", "https://mindcura.net/", "https://www.mindcura.net/"]
         }
     })
 
