@@ -28,7 +28,7 @@ export default function Dashboard() {
     const handleMoodClick = async (mood) => {
         setSelectedMood(mood);
         try {
-            const res = await fetch("https://backend.mindcura.net/ dashboard", {
+            const res = await fetch("https://backend.mindcura.net/dashboard", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
