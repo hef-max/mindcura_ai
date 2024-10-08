@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch("https://backend.mindcura.net/api/users", {
+                const res = await fetch("https://backend.mindcura.net/ api/users", {
                     method: "GET",
                     credentials: 'include'
                 });

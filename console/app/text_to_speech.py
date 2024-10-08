@@ -2,7 +2,6 @@ import os
 from elevenlabs import ElevenLabs, VoiceSettings
 from pydub import AudioSegment
 
-
 # Define the root of your project
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
@@ -11,10 +10,10 @@ def text_to_speech_elevenlabs(text):
     
     try:
         client = ElevenLabs(
-            api_key=os.environ.get("ELEVEN_LABS_API_KEY"),
+            api_key= os.environ.get("ELEVEN_LABS_API_KEY"),
         )
         audio_stream = client.text_to_speech.convert(
-            voice_id=os.environ.get("VOICE_ID"),
+            voice_id= os.environ.get("VOICE_ID") ,
             optimize_streaming_latency="0",
             output_format="mp3_22050_32",
             text=text,

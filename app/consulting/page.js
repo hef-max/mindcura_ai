@@ -58,7 +58,7 @@ export default function Consulting() {
         }
 
         try {
-            const res = await fetch("https://backend.mindcura.net/api/submit_response", {
+            const res = await fetch("https://backend.mindcura.net/ api/submit_response", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
