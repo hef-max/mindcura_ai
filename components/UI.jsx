@@ -4,7 +4,7 @@ import { useChat } from "@/hooks/useChat";
 import 'regenerator-runtime/runtime';
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import Image from "next/image";
-import { useCamera } from "@/hooks/useCamera";
+// import { useCamera } from "@/hooks/useCamera";
 
 export const UI = ({ hidden, ...props }) => {
   const input = useRef();
@@ -13,51 +13,10 @@ export const UI = ({ hidden, ...props }) => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [showHeadphoneWarning, setShowHeadphoneWarning] = useState(true);
   const [showContent, setShowContent] = useState(false);
-  const { videoRef, cameraError } = useCamera();
-  const [emotion, setEmotion] = useState(null);
-  const [lstmPrediction, setLstmPrediction] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioChunks, setAudioChunks] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
 
-  const classifyFrame = async (frame) => {
-    const formData = new FormData();
-    formData.append('file', frame, 'frame.jpg');
-
-    try {
-      const response = await fetch('https://backend.mindcura.net/api/classify_cnn', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      const result = await response.json();
-      setEmotion(result.emotion);
-    } catch (error) {
-      console.error('Error classifying frame:', error);
-    }
-  };
-
-  const captureFrame = useCallback(() => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
-    canvas.toBlob((blob) => {
-      classifyFrame(blob);
-    }, 'image/jpeg');
-  }, [videoRef]);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (videoRef.current && videoRef.current.readyState === 4) {
-        captureFrame();
-      }
-    }, 5000);
-
-    return () => clearInterval(intervalId);
-  }, [videoRef, captureFrame]);
 
   const sendMessage = useCallback((text) => {
     if (!loading && !message) {
@@ -84,7 +43,7 @@ export const UI = ({ hidden, ...props }) => {
     };
 
     recorder.start();
-    setIsRecording(true);
+    // setIsRecording(true);
   }, [mediaRecorder]);
 
   const stopRecording = useCallback(() => {
@@ -92,7 +51,7 @@ export const UI = ({ hidden, ...props }) => {
 
     mediaRecorder.stop();
     mediaRecorder.stream.getTracks().forEach(track => track.stop());
-    setIsRecording(false);
+    // setIsRecording(false);
     setMediaRecorder(null);
   }, [mediaRecorder]);
 
@@ -109,26 +68,6 @@ export const UI = ({ hidden, ...props }) => {
     handleVoiceInput();
     stopRecording();
   }, [handleVoiceInput, stopRecording]);
-
-  // const processAudio = useCallback(async () => {
-  //   const blob = new Blob(audioChunks, { type: 'audio/wav' });
-  //   const formData = new FormData();
-  //   formData.append('audio_file', blob, 'audio.wav');
-
-  //   try {
-  //     const response = await fetch('https://backend.mindcura.net/api/classify_lstm', {
-  //       method: 'POST',
-  //       body: formData,
-  //       credentials: 'include',
-  //     });
-
-  //     const result = await response.json();
-  //     setLstmPrediction(result.emotion);
-
-  //   } catch (error) {
-  //     console.error('Error making LSTM prediction:', error);
-  //   }
-  // }, [audioChunks]);
 
   useEffect(() => {
     const headphoneTimeout = setTimeout(() => {
@@ -147,12 +86,6 @@ export const UI = ({ hidden, ...props }) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!isRecording) {
-  //     processAudio();
-  //   }
-  // }, [isRecording, processAudio]);
-
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn&apos;t support speech recognition.</span>;
   }
@@ -161,9 +94,6 @@ export const UI = ({ hidden, ...props }) => {
     return null;
   }
 
-  if (cameraError) {
-    return <span>Camera error: {cameraError.message}</span>;
-  }
 
   return (
     <>
@@ -230,7 +160,6 @@ export const UI = ({ hidden, ...props }) => {
             </button>
           </div>
           <div className="flex items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto">
-            <video ref={videoRef} autoPlay muted className="hidden avatar-video"/>
             <input
               className="w-full placeholder:text-gray-800 placeholder:italic p-4 rounded-md bg-opacity-50 bg-white backdrop-blur-md"
               placeholder={transcript}

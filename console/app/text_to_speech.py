@@ -19,8 +19,8 @@ def text_to_speech_elevenlabs(text):
             text=text,
             voice_settings=VoiceSettings(
                 stability=0.1,
-                similarity_boost=0.3,
-                style=0.2,
+                similarity_boost=0.2,
+                style=0.1,
             ),
         )
 
@@ -29,11 +29,8 @@ def text_to_speech_elevenlabs(text):
             for chunk in audio_stream:
                 audio_file.write(chunk)
 
-        audio_path_mp3 = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.mp3')
-        audio = AudioSegment.from_file(audio_path_mp3)
-
-        audio_path_wav = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.wav')
-        audio.export(audio_path_wav, format='wav')
+        audio = AudioSegment.from_mp3(audio_file_path)
+        audio.export(audio_file_path.replace('.mp3', '.wav'), format='wav')
 
     except Exception as e:
         print(f"Error converting text to speech: {e}")

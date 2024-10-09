@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request, send_file
 from .models import *
 # from .cnn_lstm import classify_voice_emotion, classify_face_emotion
 from werkzeug.utils import secure_filename
+from flask import session
 from datetime import datetime
 from io import BytesIO
 from .text_to_speech import text_to_speech_elevenlabs
@@ -20,6 +21,12 @@ import os
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('numba').setLevel(logging.WARNING)
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+audio_path_mp3 = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.mp3')
+audio_path_wav = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.wav')
+audio_path_json = os.path.join(PROJECT_ROOT, 'public', 'audios', 'message_0.json')
 
 auth = Blueprint('auth', __name__)
 
@@ -511,58 +518,27 @@ def users():
 @login_required
 def chatbot():
     if request.method == "POST":
-        if not current_user.is_authenticated:
-            return jsonify({"error": "User is not authenticated"}), 401
-
         chat_data = request.get_json()
         user_message = chat_data.get('message')
 
         text_response = ""
-        initial_message = False
 
-        if not user_message and initial_message == False:
+        initial_message = session.get('initial_message', False)
+
+        if not user_message and initial_message:
             depression, anxiety, stress = calculate_dass21()
             text_response = f"""Halo Saya Mira asisten kesehatan mental Anda.
-              Saya akan membacakan hasil dari kusioner sebelumnya, {display_levels(depression, anxiety, stress)}.
-              Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Anda?"""
-            initial_message = True
+                Saya akan membacakan hasil dari kusioner sebelumnya, {display_levels(depression, anxiety, stress)}.
+                Sekarang, mari kita mulai percakapannya. Bolehkah Saya tahu nama Anda?"""
+            session['initial_message'] = True
         
         if user_message:
             text_response = get_chatgpt_response(user_message)
-        
-        user_chat_history = ChatHistory(
-            role='user',
-            text=user_message or "Generated DASS-21 levels"
-        )
-
-        db.session.add(user_chat_history)
-        db.session.commit()
-
-        user_dict = {
-            "role": user_chat_history.role,
-            "text": user_chat_history.text,
-            "datetime": user_chat_history.datetime
-        }
-        mongo.db.ChatHistory.insert_one(user_dict)
-
-        chatbot_chat_history = ChatHistory(
-            role='chatbot',
-            text=text_response
-        )
-
-        db.session.add(chatbot_chat_history)
-        db.session.commit()
-
-        chat_dict = {
-            "role": chatbot_chat_history.role,
-            "text": text_response,
-            "datetime": chatbot_chat_history.datetime
-        }
-
-        mongo.db.ChatHistory.insert_one(chat_dict)
 
         text_to_speech_elevenlabs(text=text_response)
         lip_sync_message()
+
+        print("Chatbot response generated")
 
         return jsonify({
             "messages": [
@@ -586,7 +562,6 @@ def save_summary_endpoint():
     resdass = data.get('resdass')
     resdsm = data.get('resdsm')
     chathistory = data.get('chathistory')
-
     consultation_id, mongo_id = save_summary(name, ava, date, resdass, resdsm, chathistory)
 
     return jsonify({"message": "Summary saved", "consultation_id": consultation_id, "mongo_id": mongo_id}), 201
@@ -595,11 +570,21 @@ def save_summary_endpoint():
 @auth.route('/download_summary/<int:consultation_id>', methods=['GET'])
 @login_required
 def download_summary_endpoint(consultation_id):
-    pdf_path = generate_pdf(consultation_id)
-    if not pdf_path:
-        return jsonify({"message": "Consultation not found"}), 404
+    filename = generate_pdf(consultation_id)  # This returns the S3 file key (e.g., 'consultation_1.pdf')
     
-    return send_file(f'../{pdf_path}', as_attachment=True, download_name=f'api/consultation_summary_{consultation_id}.pdf', mimetype='application/pdf')
+    if not filename:
+        return jsonify({"message": "Consultation not found"}), 404
+    try:
+        # Generate a pre-signed URL for the file
+        presigned_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': S3_BUCKET_NAME, 'Key': filename},
+            ExpiresIn=3600  # URL expiration time in seconds
+        )
+        
+        return jsonify({"download_url": presigned_url}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error generating download URL: {str(e)}"}), 500
 
     
 @auth.route('/api/check_questionnaire', methods=['GET'])

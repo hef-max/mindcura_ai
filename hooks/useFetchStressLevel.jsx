@@ -8,7 +8,7 @@ const useFetchStressLevel = () => {
     useEffect(() => {
         const fetchStressLevel = async () => {
             try {
-                const response = await fetch("https://backend.mindcura.net/ api/stress_level", {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/stress_level`, {
                     method: "GET",
                     credentials: 'include'
                 });

@@ -15,7 +15,7 @@ export default function Activity() {
     React.useEffect(() => {
         const fetchMoodHistory = async () => {
             try {
-                const res = await fetch("https://backend.mindcura.net/mood_history", {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/mood_history`, {
                     method: "GET",
                     credentials: 'include'
                 });
@@ -33,7 +33,7 @@ export default function Activity() {
 
         const fetchConsultationHistory = async () => {
             try {
-                const res = await fetch("https://backend.mindcura.net/api/consultation_history", {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/consultation_history`, {
                     method: "GET",
                     credentials: 'include'
                 });

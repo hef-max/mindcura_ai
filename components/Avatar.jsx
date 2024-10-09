@@ -103,13 +103,20 @@ const corresponding = {
 let setupMode = false;
 
 export function Avatar(props) {
-  const { nodes, materials, scene } = useGLTF(
-    "/models/666df3d67f005526459cbb5c.glb"
-  );
+  const { nodes, materials, scene } = useGLTF("/models/666df3d67f005526459cbb5c.glb");
 
   const { chat, onMessagePlayed, message } = useChat();
 
   const [lipsync, setLipsync] = useState();
+  const [audio, setAudio] = useState(null);
+  const { animations } = useGLTF("/models/animations.glb");
+  
+  const group = useRef();
+  const { actions } = useAnimations(animations || {}, group);
+  const [animation, setAnimation] = useState(
+    animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
+  );
+
 
   useEffect(() => {
     if (!message) {
@@ -117,25 +124,30 @@ export function Avatar(props) {
       return;
     }
     setAnimation(message.animation);
+    const audioElement = new Audio("data:audio/mp3;base64," + message.audio);
     setFacialExpression(message.facialExpression);
     setLipsync(message.lipsync);
-    const audio = new Audio("data:audio/mp3;base64," + message.audio);
-    audio.play();
-    setAudio(audio);
-    audio.onended = onMessagePlayed;
+    audioElement.play();
+    audioElement.onended = onMessagePlayed;
+    audioElement.onended = () => {
+      setLipsync(null);
+      setAnimation("Idle");
+    };
+    
+    setAudio(audioElement);
+
   }, [message, onMessagePlayed]);
 
-  const { animations } = useGLTF("/models/animations.glb");
-
-  const group = useRef();
-  const { actions, mixer } = useAnimations(animations, group);
-  const [animation, setAnimation] = useState(
-    animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
-  );
   useEffect(() => {
-    actions[animation].reset().fadeIn(mixer.stats.actions.inUse === 0 ? 0 : 0.5).play();
-    return () => actions[animation].fadeOut(0.5);
-  }, [animation, actions, mixer.stats.actions.inUse]);
+    if (actions[animation]) {
+      actions[animation].reset().fadeIn(0.5).play();
+    }
+    return () => {
+      if (actions[animation]) {
+        actions[animation].fadeOut(0.5);
+      }
+    };
+  }, [animation, actions]);
 
   const lerpMorphTarget = (target, value, speed = 0.1) => {
     scene.traverse((child) => {
@@ -168,7 +180,6 @@ export function Avatar(props) {
   const [winkLeft, setWinkLeft] = useState(false);
   const [winkRight, setWinkRight] = useState(false);
   const [facialExpression, setFacialExpression] = useState("");
-  const [audio, setAudio] = useState();
 
   useFrame(() => {
     !setupMode &&
@@ -295,6 +306,7 @@ export function Avatar(props) {
     nextBlink();
     return () => clearTimeout(blinkTimeout);
   }, []);
+
 
   return (
     <group {...props} dispose={null} ref={group}>

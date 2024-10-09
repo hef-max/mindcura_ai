@@ -18,7 +18,7 @@ export default function PasswordSettings() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("https://backend.mindcura.net/logout", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/logout`, {
                 method: "GET",
                 credentials: 'include'
             });
@@ -44,7 +44,7 @@ export default function PasswordSettings() {
         }
 
         try {
-            const res = await fetch("https://backend.mindcura.net/api/change_password", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/change_password`, {
                 method: "POST",
                 credentials: 'include',
                 headers: {

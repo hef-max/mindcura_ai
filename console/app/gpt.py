@@ -10,24 +10,31 @@ load_dotenv()
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 def get_chatgpt_response(message):
-    response = openai.ChatCompletion.create(
-        model="ft:gpt-4o-mini-2024-07-18:personal::A9kj7tNX", 
-        messages=[
-            {"role": "system", "content": """Kamu adalah asisten kesehatan mental bernama Mira,
-              Kamu sedang berbicara dengan pasien yang bisa saja memiliki gangguan kesehatan mental.
-              Kamu harus memberikan dukungan dan saran kepada orang tersebut.
-              Pemberian saran harus melalui pendekatan CBT untuk merubah pemikiran irrasional menjadi lebih rasional.
-              Dalam melakukan sesi konseling kamu harus menggali lebih dalam mengenai gejala dan apa yang dirasakan pasien sampai menemukan titik permasalahan nya sehingga
-              kamu dapat berlanjut untuk melakukan suatu strategi teknik pernapasan."""},
-            {"role": "user", "content": message}
-        ]
-    )
-    return response.choices[0].message['content']
+    try:
+        response = openai.ChatCompletion.create(
+            model="ft:gpt-4o-mini-2024-07-18:personal::A9kj7tNX",
+            messages=[
+                {"role": "system", "content": """Kamu adalah asisten kesehatan mental bernama Mira,
+                  Kamu sedang berbicara dengan pasien yang bisa saja memiliki gangguan kesehatan mental.
+                  Kamu harus memberikan dukungan dan saran kepada orang tersebut.
+                  Pemberian saran harus melalui pendekatan CBT untuk merubah pemikiran irrasional menjadi lebih rasional.
+                  Dalam melakukan sesi konseling kamu harus menggali lebih dalam mengenai gejala dan apa yang dirasakan pasien sampai menemukan titik permasalahan nya sehingga
+                  kamu dapat berlanjut untuk melakukan suatu strategi teknik pernapasan."""},
+                {"role": "user", "content": message}
+            ]
+        )
+        return response.choices[0].message['content']
+
+    except openai.error.OpenAIError as e:
+        print(f"Error interacting with OpenAI API: {e}")
+        return "Maaf, terjadi kesalahan saat memproses pesan Anda. Silakan coba lagi nanti."
+
 
 def get_gpt_explanation(depression, anxiety, stress):
     question = f"Dari kuisioner DASS 21 yang sudah pengguna lakukan hasil skor yang didapat Stres {stress}, Kecemasan {anxiety}, Depresi {depression}."
     response = get_chatgpt_response(question)
     return response
+
 
 def get_gpt_Ofinal_exaplanation(Ocnn, Olstm, Odass):
     Ofinal_depresi, Ofinal_stres, Ofinal_kecemasan = combinations(Ocnn, Olstm, Odass)
@@ -41,9 +48,11 @@ def get_gpt_Ofinal_exaplanation(Ocnn, Olstm, Odass):
     response = get_chatgpt_response(question)
     return response
 
+
 def resume_gpt(text):
     resume = f"Buatkan kesimpulan sederhana dari kalimat ini maksimal 3 baris kalimat: {text}"
     return get_chatgpt_response(resume)
+
 
 def get_chatgpt_summary(chat_history):
     prompt = f"""

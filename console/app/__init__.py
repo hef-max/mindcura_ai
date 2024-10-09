@@ -2,9 +2,9 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_login import LoginManager
-from dotenv import load_dotenv
 from .auth import auth as auth_blueprint
 from .models import User, db, mongo
+from dotenv import load_dotenv
 import os
 
 load_dotenv()
@@ -26,7 +26,7 @@ def create_app():
 
     CORS(app, supports_credentials=True, resources={
         r"/*": {
-            "origins": ["*", "https://mindcura.net/", "https://www.mindcura.net/"]
+            "origins": ["*", "http://localhost:3000/"]
         }
     })
 

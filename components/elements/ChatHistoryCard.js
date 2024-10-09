@@ -9,7 +9,7 @@ export default function ChatHistoryCard({ item }) {
     const handleDownload = async () => {
         console.log(item);
         try {
-            const response = await fetch(`https://backend.mindcura.net/download_summary/${item.id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/download_summary/${item.id}`, {
                 method: 'GET',
                 credentials: 'include',
             });
