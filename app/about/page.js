@@ -5,7 +5,7 @@ import Layout from "@/components/layouts/Layouts";
 export default function About() {
     return (
         <Layout>
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-10 w-full h-full">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold text-black mb-4">Tentang Kami</h1>
                     <h5 className="text-grey-600">#Your Mental Health Matters</h5>
@@ -22,7 +22,7 @@ export default function About() {
                             Dengan tim ahli di bidang teknologi dan psikologi, MindCura berkomitmen untuk meningkatkan kesejahteraan mental melalui pendekatan modern dan efektif.
                         </div>
                     </div>
-                    <div className="flex justify-center lg:items-start lg:justify-end w-full lg:w-[50%]">
+                    <div className="flex flex-col lg:flex-row justify-center lg:items-start lg:justify-end w-full lg:w-[50%]">
                         <Image 
                             src="/images/Ellipse 9.png"
                             alt='logo image'

@@ -27,7 +27,7 @@ export default function ConsentForm() {
     
     return (
         <div className={`w-full h-full flex flex-col lg:flex-row ${poppins.className}`}>
-            <div className="w-full lg:w-[80%] h-100px lg:h-100px bg-primary-50 p-2 sm:p-10 flex flex-col gap-5">
+            <div className="w-full lg:w-[80%] h-100px lg:h-100px bg-primary-50 p-5 sm:p-10 flex flex-col gap-5">
                 <h1 className="font-bold text-2xl capitalize mb-5">Formulir Persetujuan yang Diinformasikan</h1>
                 <p className="text-justify"><b>Tujuan Pengambilan Data: </b>
                 Dalam proses penilaian dan intervensi, penting untuk kami jelaskan tujuan di balik pengumpulan informasi Anda. Hal ini dilakukan dengan tujuan memahami kebutuhan Anda secara menyeluruh dan memberikan bantuan yang sesuai. Kami menghargai kepercayaan Anda dalam memberikan informasi pribadi. Setiap data yang Anda berikan akan digunakan untuk merancang rencana perawatan yang sesuai dengan kebutuhan Anda. Sebelum kami mulai proses penilaian atau intervensi, kami akan menjelaskan secara jelas tujuan kami mengumpulkan informasi dari Anda. Hal ini bertujuan untuk memastikan bahwa setiap langkah yang kami ambil sesuai dengan kebutuhan Anda dan memberikan manfaat yang maksimal. Tujuan kami dalam mengambil data untuk assessment dan intervensi adalah untuk memahami situasi Anda secara holistik dan menyediakan bantuan yang paling efektif sesuai dengan kebutuhan Anda.</p>

@@ -6,7 +6,7 @@ import { Poppins } from "next/font/google";
 import Link from 'next/link';
 import { MOODS_LIST } from "@/components/layouts/constants";
 
-const poppins = Poppins({ 
+const poppins = Poppins({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700", "800", "900"],
     variable: '--font-poppins'
@@ -61,19 +61,11 @@ export default function Dashboard() {
 
     return (
         <Layout>
-            <div className={`flex flex-col items-center ${poppins.className}`}>
-                <div className="w-full max-w-6xl flex flex-col items-center px-4">
-                    <Image 
-                    src="/images/mindcura3 - bg.png"
-                    alt="Background"
-                    className="absolute inset-0 w-auto h-auto opacity-100"
-                    width={1202}
-                    height={1000}
-                    />
-                    
+            <div className={`flex flex-col items-center w-full ${poppins.className}`}>
+                <div className="flex flex-col lg:flex-row items-center px-4 lg:px-20 w-full h-full">
                     {/* Health Solutions Section */}
-                    <div className="w-full bg-slate-50 rounded-xl p-6 mb-8 relative">
-                        <h2 className="text-2xl font-semibold">Solusi Kesehatan Mental Anda</h2><br></br>
+                    <div className="w-fit lg:w-8/12 rounded-xl pb-8 relative text-md">
+                        <h2 className="text-xl font-semibold">Solusi Kesehatan Mental Anda</h2><br></br>
                         <p>Stres tidak selalu buruk. Dalam jangka pendek, stres bisa memotivasi kita</p>
                         <p>untuk menyelesaikan tugas atau tantangan. Namun, stres jangka panjang</p>
                         <p className="mb-6">dapat mengganggu kesehatan fisik dan mental kita</p>
@@ -84,25 +76,25 @@ export default function Dashboard() {
                         <p>dan bertahan lama. ini mempengaruhi perasaan, dan aktivitas sehari-hari. Jika merasa</p>
                         <p>kehilangan minat terhadap hal-hal yang biasa disukai, penting untuk mencari bantuan ahli.</p>
                         <p className="mb-6"></p>
-                        <div className="flex flex-wrap gap-8">
+                        <div className="flex flex-wrap gap-y-6 lg:gap-8 mt-16 w-full lg:w-fit justify-between">
                             <Link href='/consulting'>
                                 <div className="flex flex-col items-center p-4 bg-white rounded shadow hover:bg-gray-100 cursor-pointer">
-                                    <Image src="/icons/Icon Terapis.png" alt="Chat dengan Dokter" width={110} height={100} className="w-auto h-auto border-solid rounded"/>
+                                    <Image src="/icons/Icon Terapis.png" alt="Chat dengan Dokter" width={110} height={100} className="w-auto h-auto border-solid rounded" />
                                     <span className="mt-2 text-center">Konsultasi</span>
                                 </div>
                             </Link>
                             <Link href='/therapist'>
                                 <div className="flex flex-col items-center p-4 bg-white rounded shadow hover:bg-gray-100 cursor-pointer">
-                                    <Image src="/icons/Icon Konsultasi.png" alt="Toko Kesehatan" width={110} height={100} className="w-auto h-auto border-solid rounded"/>
+                                    <Image src="/icons/Icon Konsultasi.png" alt="Toko Kesehatan" width={110} height={100} className="w-auto h-auto border-solid rounded" />
                                     <span className="mt-2 text-center">Terapis</span>
                                 </div>
                             </Link>
-                            <div className="flex flex-col p-4 bg-white rounded shadow cursor-pointer">
+                            <div className="flex flex-col bg-white rounded shadow cursor-pointer">
                                 <div className="font-semibold text-lg mb-2 text-center">Bagaimana Perasaan Kamu Hari ini?</div>
                                 <div className="flex gap-3 bg-primary-50 p-2 rounded-lg w-fit mx-auto justify-center">
                                     {MOODS_LIST.map((item, index) => (
-                                        <div 
-                                            key={index} 
+                                        <div
+                                            key={index}
                                             className={`flex flex-col items-center gap-1 font-semibold p-2 rounded-lg cursor-pointer hover:bg-primary-50 transform transition duration-300 ${moodColors[item.name]}`}
                                             onClick={() => handleMoodClick(item)}
                                         >
@@ -117,12 +109,23 @@ export default function Dashboard() {
                                         </div>
                                     ))}
                                 </div>
-                                {message && 
+                                {message &&
                                     <div className={`message-box ${messageType === 'success' ? 'success' : 'error'}`}>
                                         <p>{message}</p>
                                     </div>
                                 }
                             </div>
+                        </div>
+                    </div>
+                    <div className="invisible lg:visible">
+                        <div className="flex w-full-justify-center">
+                            <Image
+                                src="/images/mindcura3 - bg.png"
+                                alt="Background"
+                                width={1202}
+                                height={1000}
+                                className="lg:max-w-lg bg-transparent"
+                            />
                         </div>
                     </div>
                 </div>

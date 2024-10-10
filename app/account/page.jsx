@@ -130,8 +130,8 @@ export default function Account() {
 
     return (
         <Layout>
-            <div className="w-full min-h-screen flex">
-                <div className="w-1/4 bg-white shadow-md p-4">
+            <div className="w-full min-h-screen flex flex-col lg:flex-row">
+                <div className="w-full lg:w-1/4 bg-white shadow-md p-4">
                     <div className="flex flex-col items-center mb-6">
                         <Image 
                             src={user?.myfiles ? user.myfiles : "/icons/user.png"}
@@ -174,54 +174,54 @@ export default function Account() {
                         </AlertDialogComponent>
                     </div>
                 </div>
-                <div className="w-3/4 bg-white p-6">
+                <div className="w-full lg:w-3/4 bg-white p-6">
                     <h1 className="text-2xl font-bold mb-4">Account Settings</h1>
-                    <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
+                    <form className="flex flex-col lg:grid lg:grid-cols-2 gap-4" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Nama Lengkap</label>
-                            <input type="text" name="username" value={formData.username} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="username" value={formData.username} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Email</label>
-                            <input type="email" name="email" disabled="disable" value={formData.email} className="p-2 w-[80%] border rounded" />
+                            <input type="email" name="email" disabled="disable" value={formData.email} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Tanggal Lahir</label>
-                            <input type="text" name="birth" defaultValue={formData.birth} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="birth" defaultValue={formData.birth} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Jenis Kelamin</label>
-                            <input type="text" name="jeniskelamin" disabled="disable" value={formData.JK} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="jeniskelamin" disabled="disable" value={formData.JK} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Universitas</label>
-                            <input type="text" name="univ" value={formData.univ} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="univ" value={formData.univ} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Program Studi</label>
-                            <input type="text" name="prodi" value={formData.prodi} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="prodi" value={formData.prodi} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Nomor Pokok Mahasiswa</label>
-                            <input type="text" name="npm" value={formData.npm} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="npm" value={formData.npm} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Nomor Telepon</label>
-                            <input type="text" name="number" value={formData.number} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="number" value={formData.number} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Anak ke</label>
-                            <input type="text" name="anakke" value={formData.anakke} onChange={handleChange} className="p-2 w-[80%] border rounded" />
+                            <input type="text" name="anakke" value={formData.anakke} onChange={handleChange} className="p-2 w-full lg:w-[80%] border rounded" />
                         </div>
-                        <div className="flex flex-col w-full">
+                        <div className="flex flex-col">
                             <label className="font-semibold mb-1">Alamat</label>
-                            <input 
+                            <textarea
                                 type="text" 
                                 name="address" 
                                 value={formData.address} 
                                 onChange={handleChange}
-                                className="p-2 border rounded w-full h-10"
-                            />
+                                className="border rounded w-full lg:w-[80%] h-20 resize-y"
+                            ></textarea>
                         </div>
                         <div className="col-span-2 flex justify-end gap-4">
                             <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Update</button>

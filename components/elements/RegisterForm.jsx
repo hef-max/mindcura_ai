@@ -123,7 +123,7 @@ export default function RegisterForm() {
                 <h1 className="text-2xl font-semibold my-4 text-center">Daftar</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-10 items-center">
                     <div className="flex gap-4 flex-wrap justify-center">
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-full lg:w-[45%] min-w-[300px]">
                             <input
                                 onChange={(e) => setName(e.target.value)}
                                 type="text"
@@ -133,7 +133,7 @@ export default function RegisterForm() {
                                 autoComplete="username"
                             />
                         </div>
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-full lg:w-[45%] min-w-[300px]">
                             <input
                                 onChange={(e) => setEmail(e.target.value)}
                                 type="email"
@@ -143,7 +143,7 @@ export default function RegisterForm() {
                                 autoComplete="email"
                             />
                         </div>
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-full lg:w-[45%] min-w-[300px]">
                             <input
                                 onChange={handlePasswordChange}
                                 type="password"
@@ -153,7 +153,7 @@ export default function RegisterForm() {
                                 autoComplete="current-password"
                             />
                         </div>
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-full lg:w-[45%] min-w-[300px]">
                             <input
                                 onChange={handleConfirmPasswordChange}
                                 type="password"
@@ -163,7 +163,7 @@ export default function RegisterForm() {
                                 autoComplete="new-password"
                             />
                         </div>
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]" >
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-full lg:w-[45%] min-w-[300px]" >
                             <select
                                 onChange={(e) => setJK(e.target.value)}
                                 onKeyDown={handleKeyDown}
@@ -176,7 +176,7 @@ export default function RegisterForm() {
                                 <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
-                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-[45%] min-w-[300px]">
+                        <div className="flex px-4 py-3 gap-2 items-center bg-white rounded-lg w-full lg:w-[45%] min-w-[300px]">
                             <input
                                 onChange={handleBirthChange}
                                 type="date"
@@ -218,9 +218,9 @@ export default function RegisterForm() {
                 <h2 className="text-sm text-center mb-5">Didukung oleh</h2>
                 <Image src={"/images/Header Logo.png"}
                 priority={true}
-                width={257}
-                height={357}
-                className="h-auto w-auto"
+                width={2203}
+                height={275}
+                className="w-96"
                 alt="Logo support by"
                 />
             </div>
