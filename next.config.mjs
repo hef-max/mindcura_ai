@@ -3,13 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        pathname: '**',
-      },
-    ],
+    domains: ['mindcura-app.s3.ap-southeast-2.amazonaws.com'],
   },
 };
 

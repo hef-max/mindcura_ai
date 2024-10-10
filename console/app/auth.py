@@ -478,7 +478,7 @@ def users():
         if 'myfiles' in request.files:
             file = request.files['myfiles']
             
-            if file:
+            if file and file.filename != '':
                 filename = secure_filename(file.filename)
                 file_buffer = BytesIO(file.read())
 
@@ -494,9 +494,6 @@ def users():
                     
                     current_user.myfiles = file_url
                     updates['myfiles'] = file_url
-                    
-                    return jsonify({"message": "Profile updated successfully"}), 200
-                
                 except Exception as e:
                     return jsonify({"error": f"Error uploading file: {str(e)}"}), 500
 
@@ -535,11 +532,21 @@ def chatbot():
         if user_message:
             text_response = get_chatgpt_response(user_message)
 
+        mongo.db.ChatHistory.insert_one({
+            "role": "user",
+            "text": user_message,
+            "datetime": datetime.utcnow()
+        })
+
+        mongo.db.ChatHistory.insert_one({
+            "role": 'chatbot',
+            "text": text_response,
+            "datetime": datetime.utcnow()
+        })
+
         text_to_speech_elevenlabs(text=text_response)
         lip_sync_message()
-
-        print("Chatbot response generated")
-
+        
         return jsonify({
             "messages": [
                 {
