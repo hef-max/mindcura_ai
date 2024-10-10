@@ -90,7 +90,9 @@ input {
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
-
+.subtitle {
+  @apply mt-2 text-center text-sm text-gray-700;
+}
 .modal-overlay {
   position: fixed;
   top: 0;

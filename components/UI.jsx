@@ -16,7 +16,7 @@ export const UI = ({ hidden, ...props }) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioChunks, setAudioChunks] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
-
+  const [subtitle, setSubtitle] = useState("");
 
   const sendMessage = useCallback((text) => {
     if (!loading && !message) {
@@ -43,7 +43,7 @@ export const UI = ({ hidden, ...props }) => {
     };
 
     recorder.start();
-    // setIsRecording(true);
+    setIsRecording(true);
   }, [mediaRecorder]);
 
   const stopRecording = useCallback(() => {
@@ -51,7 +51,7 @@ export const UI = ({ hidden, ...props }) => {
 
     mediaRecorder.stop();
     mediaRecorder.stream.getTracks().forEach(track => track.stop());
-    // setIsRecording(false);
+    setIsRecording(false);
     setMediaRecorder(null);
   }, [mediaRecorder]);
 
@@ -78,13 +78,24 @@ export const UI = ({ hidden, ...props }) => {
     const instructionsTimeout = setTimeout(() => {
       setShowInstructions(false);
       setShowContent(true);
-    }, 15000);
+    }, 5000);
 
     return () => {
       clearTimeout(headphoneTimeout);
       clearTimeout(instructionsTimeout);
     };
   }, []);
+
+  useEffect(() => {
+    if (message) {
+      setSubtitle(message.text); // Sesuaikan dengan struktur data pesan Anda
+      const subtitleTimeout = setTimeout(() => {
+        setSubtitle("");
+      }, 5000); // Menghapus subtitle setelah 5 detik
+
+      return () => clearTimeout(subtitleTimeout);
+    }
+  }, [message]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn&apos;t support speech recognition.</span>;
@@ -93,7 +104,6 @@ export const UI = ({ hidden, ...props }) => {
   if (hidden) {
     return null;
   }
-
 
   return (
     <>
@@ -159,15 +169,20 @@ export const UI = ({ hidden, ...props }) => {
               )}
             </button>
           </div>
-          <div className="flex items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto">
-            <input
+          <div className="flex flex-col items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto px-4 sm:px-6 lg:px-8">
+            {subtitle && (
+              <p className="mb-2 text-center text-sm text-gray-700 animate-fade-in">
+                {subtitle}
+              </p>
+            )}
+            {/* <input
               className="w-full placeholder:text-gray-800 placeholder:italic p-4 rounded-md bg-opacity-50 bg-white backdrop-blur-md"
               placeholder={transcript}
-              disabled="disabled"
-            />
-          <button
+              disabled
+            /> */}
+            <button
               onClick={listening ? stopListening : startListening}
-              className={`bg-blue-500 hover:bg-blue-600 text-white p-4 px-10 font-semibold uppercase rounded-full avatar-button avatar-button:hover ${
+              className={`bg-blue-500 hover:bg-blue-600 text-white p-4 px-10 font-semibold uppercase rounded-full avatar-button ${
                 loading || message ? "cursor-not-allowed opacity-30" : ""
               }`}
             >
