@@ -91,7 +91,7 @@ export const UI = ({ hidden, ...props }) => {
       setSubtitle(message.text); // Sesuaikan dengan struktur data pesan Anda
       const subtitleTimeout = setTimeout(() => {
         setSubtitle("");
-      }, 3000); // Menghapus subtitle setelah 5 detik
+      }, 5000); // Menghapus subtitle setelah 5 detik
 
       return () => clearTimeout(subtitleTimeout);
     }
@@ -132,42 +132,6 @@ export const UI = ({ hidden, ...props }) => {
         {showContent && (
           <>
           <div className="w-full flex flex-col items-end justify-center gap-4">
-            {/* <button
-              onClick={() => setCameraZoomed(!cameraZoomed)}
-              className="pointer-events-auto bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-md avatar-button avatar-button:hover"
-            >
-              {cameraZoomed ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13.5 10.5h-6"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
-                  />
-                </svg>
-              )}
-            </button> */}
           </div>
           <div className="flex flex-col items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto px-4 sm:px-6 lg:px-8">
             {subtitle && (
@@ -175,11 +139,6 @@ export const UI = ({ hidden, ...props }) => {
                 {subtitle}
               </p>
             )}
-            {/* <input
-              className="w-full placeholder:text-gray-800 placeholder:italic p-4 rounded-md bg-opacity-50 bg-white backdrop-blur-md"
-              placeholder={transcript}
-              disabled
-            /> */}
             <button
               onClick={listening ? stopListening : startListening}
               className={`bg-blue-500 hover:bg-blue-600 text-white p-4 px-10 font-semibold uppercase rounded-full avatar-button ${
