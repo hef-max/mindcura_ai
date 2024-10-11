@@ -78,7 +78,7 @@ export const UI = ({ hidden, ...props }) => {
     const instructionsTimeout = setTimeout(() => {
       setShowInstructions(false);
       setShowContent(true);
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearTimeout(headphoneTimeout);
@@ -91,7 +91,7 @@ export const UI = ({ hidden, ...props }) => {
       setSubtitle(message.text); // Sesuaikan dengan struktur data pesan Anda
       const subtitleTimeout = setTimeout(() => {
         setSubtitle("");
-      }, 5000); // Menghapus subtitle setelah 5 detik
+      }, 3000); // Menghapus subtitle setelah 5 detik
 
       return () => clearTimeout(subtitleTimeout);
     }

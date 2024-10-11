@@ -38,13 +38,11 @@ def read_json_transcript(file_path):
 
 def lip_sync_message():
     try:
-        rhubarb_executable = os.path.join(PROJECT_ROOT, "rhubarb", "rhubarb")
+        rhubarb_executable = os.path.join(PROJECT_ROOT, "rhubarb", "./rhubarb")
         
-        # Cek apakah executable Rhubarb tersedia
         if not os.path.isfile(rhubarb_executable):
             raise FileNotFoundError(f"Rhubarb executable not found at {rhubarb_executable}")
         
-        # Jalankan proses Rhubarb untuk membuat lip sync
         subprocess.run([rhubarb_executable, "-f", "json", "-o", audio_path_json, audio_path_wav, "-r", "phonetic"], check=True)
         print(f"Lip sync data successfully generated and saved to {audio_path_json}")
         
