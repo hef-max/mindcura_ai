@@ -1,5 +1,6 @@
 {
   "metadata": {
+<<<<<<< HEAD
     "soundFile": "D:\\mindcura_ai\\public\\audios\\message_0.wav",
     "duration": 3.97
   },
@@ -30,5 +31,20 @@
     { "start": 3.52, "end": 3.60, "value": "A" },
     { "start": 3.60, "end": 3.68, "value": "B" },
     { "start": 3.68, "end": 3.97, "value": "X" }
+=======
+    "soundFile": "/mnt/01D8CC470068EB90/Github/mindcura_ai/public/audios/message_0.wav",
+    "duration": 0.99
+  },
+  "mouthCues": [
+    { "start": 0.00, "end": 0.12, "value": "X" },
+    { "start": 0.12, "end": 0.19, "value": "B" },
+    { "start": 0.19, "end": 0.33, "value": "C" },
+    { "start": 0.33, "end": 0.40, "value": "B" },
+    { "start": 0.40, "end": 0.48, "value": "A" },
+    { "start": 0.48, "end": 0.65, "value": "C" },
+    { "start": 0.65, "end": 0.90, "value": "A" },
+    { "start": 0.90, "end": 0.98, "value": "B" },
+    { "start": 0.98, "end": 0.99, "value": "X" }
+>>>>>>> 5db5a22aa080bc907dfd01b4a71d80cf20d7ed4a
   ]
 }
