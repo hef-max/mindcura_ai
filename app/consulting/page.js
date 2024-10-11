@@ -127,8 +127,8 @@ export default function Consulting() {
                                 {error}
                             </div>
                         )}
-                        <div className="flex flex-col w-[10%] justify-center text-center">
-                            <button className="bg-primary-500 text-white font-bold cursor-pointer py-2 rounded-lg justify-center">
+                        <div className="flex flex-col text-center items-end lg:items-start">
+                            <button className="bg-primary-500 text-white font-bold cursor-pointer rounded-lg justify-center w-fit px-3 py-2 mb-3">
                                 Submit
                             </button>
                         </div>
