@@ -15,7 +15,7 @@ const Layout = ({ children, path=null }) => {
     return (
         <main className={`w-full select-none overflow-y-auto ${poppins.className}`}>
             <Navbar/>
-            <section className={`flex flex-1 ${path !== 'avatar' ? 'pt-[50px] px-4 md:px-10' : null} w-full h-full`}>{children}</section>
+            <section className={`flex flex-col ${path !== 'avatar' ? 'pt-[50px] px-4 md:px-10' : null} w-full h-full`}>{children}</section>
         </main>
     )
 }
