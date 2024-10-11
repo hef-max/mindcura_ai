@@ -61,7 +61,7 @@ export default function Dashboard() {
 
     return (
         <Layout>
-            <div className={`flex flex-col items-center pt-[0px] px-0 md:px-0 w-full h-full ${poppins.className}`}>
+            <div className={`flex flex-col items-center w-full h-full ${poppins.className}`}>
                 <div className="flex flex-col lg:flex-row items-center px-4 lg:px-20">
                     {/* Health Solutions Section */}
                     <div className="w-fit lg:w-8/12 rounded-xl pb-8 relative text-md">
