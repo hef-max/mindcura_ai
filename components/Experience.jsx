@@ -21,7 +21,7 @@ const Dots = (props) => {
           }
           return loadingText + ".";
         });
-      }, 800);
+      }, 500);
       return () => clearInterval(interval);
     } else {
       setLoadingText("");
