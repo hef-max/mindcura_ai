@@ -13,11 +13,9 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 def get_chatgpt_response(message):
     model = "ft:gpt-4o-mini-2024-07-18:personal::A9kj7tNX"
     
-    # Retrieve previous messages from MongoDB for current user
     chat_history = list(mongo.db.ChatHistory.find({"role": {"$in": ["user", "assistant"]}}).sort("datetime", 1))
 
     if not chat_history:
-        # If no previous conversation exists, start a new one
         messages = [
             {"role": "system", "content": """
             Kamu adalah asisten kesehatan mental, Nama kamu adalah Mira. 
@@ -28,18 +26,15 @@ def get_chatgpt_response(message):
             sampai menemukan titik permasalahan nya sehingga kamu dapat berlanjut untuk melakukan suatu strategi teknik pernapasan."""},
             {"role": "user", "content": message}
         ]
-    else:
-        # Build messages array from previous conversation
+    if chat_history:
         messages = [{"role": chat['role'], "content": chat['text']} for chat in chat_history]
         messages.append({"role": "user", "content": message})
 
-    # Call the OpenAI API to get the response
     response = openai.ChatCompletion.create(
         model=model, 
         messages=messages
     )
     
-    # Extract the assistant (chatbot) response    
     chatbot_response = response.choices[0].message['content']
     return chatbot_response
 

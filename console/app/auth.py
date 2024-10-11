@@ -96,13 +96,13 @@ def register():
 
         user_dict = {
             "id": new_user.id,
-            "username": new_user.username,
-            "password": new_user.password,
-            "email": new_user.email, 
-            "birth": new_user.birth,
-            "jeniskelamin": new_user.jeniskelamin,
-            "status": new_user.status,
-            "created_at": new_user.created_at
+            "username": username,
+            "password": password,
+            "email": email, 
+            "birth": birth,
+            "jeniskelamin": jeniskelamin,
+            "status": "Mahasiswa",
+            "created_at": datetime.now()
         }
 
         mongo.db.users.insert_one(user_dict)
@@ -147,6 +147,7 @@ def login():
     except Exception as e:
         logging.error(f"Error occurred: {e}")
         return jsonify(message="An error occurred"), 500
+    
     
 @auth.route('/logout')
 @login_required

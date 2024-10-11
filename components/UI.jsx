@@ -132,7 +132,7 @@ export const UI = ({ hidden, ...props }) => {
         {showContent && (
           <>
           <div className="w-full flex flex-col items-end justify-center gap-4">
-            <button
+            {/* <button
               onClick={() => setCameraZoomed(!cameraZoomed)}
               className="pointer-events-auto bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-md avatar-button avatar-button:hover"
             >
@@ -167,7 +167,7 @@ export const UI = ({ hidden, ...props }) => {
                   />
                 </svg>
               )}
-            </button>
+            </button> */}
           </div>
           <div className="flex flex-col items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto px-4 sm:px-6 lg:px-8">
             {subtitle && (
