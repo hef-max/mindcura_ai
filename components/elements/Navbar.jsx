@@ -41,7 +41,7 @@ const Navbar = () => {
   }, [setUser]);
 
   return (
-    <nav className='w-screen items-center justify-between flex py-3 lg:py-2 px-4 md:px-10 shadow bg-white z-50'>
+    <nav className='w-full items-center justify-between flex py-3 lg:py-2 px-4 md:px-10 shadow bg-white'>
       <Link href='/dashboard'>
         <Image
           src="/images/Group103.png"

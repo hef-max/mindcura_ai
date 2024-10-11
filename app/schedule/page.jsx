@@ -43,31 +43,33 @@ export default function Schedule() {
                     <div className="flex justify-between py-4">
                         <h1 className="text-2xl font-semibold">Kalender</h1>
                     </div>
-                    <CalendarContainer
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        className="rounded-lg border shadow-lg"
-                    />
+                        <CalendarContainer
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            className="rounded-lg border shadow-lg w-full"
+                        />
+                    {/* <div className="flex w-full bg-slate-500 items-center place-content-center">
+                    </div> */}
                 </div>
-                
+
                 {/* Right Section for Schedule and Daily Activity */}
                 <div className="flex flex-col w-full md:w-1/2">
                     <div className="w-full">
                         <h1 className="text-2xl font-semibold">Jadwal</h1>
-                        <FormattedDate/>
+                        <FormattedDate />
                         <ScrollArea className="h-[200px] w-full mt-3">
                             {scheduleList.map((item, index) => (
-                                <ScheduleCard item={item} key={index}/>
+                                <ScheduleCard item={item} key={index} />
                             ))}
                         </ScrollArea>
                     </div>
                     <div className="h-full w-full py-2">
                         <h1 className="text-2xl font-semibold">Aktivitas Harian</h1>
-                        <FormattedDate/>
+                        <FormattedDate />
                         <ScrollArea className="h-[300px] w-full mt-3">
                             {DAILY_ACTIVITY_LIST.map((item, index) => (
-                                <DailyActivityCard item={item} key={index}/>
+                                <DailyActivityCard item={item} key={index} />
                             ))}
                         </ScrollArea>
                     </div>

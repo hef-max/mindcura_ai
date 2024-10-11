@@ -1,6 +1,7 @@
 import React from 'react';
 import { Poppins } from "next/font/google";
 import Navbar from '../elements/Navbar';
+import usePath from '@/hooks/usePath';
 
 
 const poppins = Poppins({ 
@@ -9,11 +10,12 @@ const poppins = Poppins({
     variable: '--font-poppins'
 });
 
-const Layout = ({ children }) => {
+const Layout = ({ children, path=null }) => {
+    // console.log(path);
     return (
-        <main className={`w-screen h-screen select-none ${poppins.className}`}>
+        <main className={`w-full select-none overflow-y-auto ${poppins.className}`}>
             <Navbar/>
-            <section className="flex flex-1 mt-[50px] px-4 md:px-10 w-screen h-screen">{children}</section>
+            <section className={`flex flex-1 ${path !== 'avatar' ? 'pt-[50px] px-4 md:px-10' : null} w-full h-full`}>{children}</section>
         </main>
     )
 }

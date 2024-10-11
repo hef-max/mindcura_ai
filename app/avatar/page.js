@@ -25,7 +25,7 @@ export default function Avatar() {
       }, []);
 
     return (
-        <Layout>
+        <Layout path='avatar'>
             <div id="root"></div>
         </Layout>
     );
