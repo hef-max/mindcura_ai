@@ -12,6 +12,7 @@ export default function Account() {
     const router = useRouter();
     const { user } = useAuth();
     const [profilePic, setProfilePic] = useState(null);
+    const [previewPorfilePic, setPreviewProfilePic] = useState(null);
     const fileInputRef = useRef(null);
     const [message, setMessage] = useState('');
     const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ export default function Account() {
         address: user?.address || ''
     });
     const [initialData, setInitialData] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -72,6 +74,7 @@ export default function Account() {
     };
 
     const handleSubmit = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
 
         const isFormDataChanged = Object.keys(initialData).some(key => initialData[key] !== formData[key]);
@@ -101,15 +104,19 @@ export default function Account() {
 
             if (res.ok) {
                 console.log("Update successfully");
-                setTimeout(() => {
-                    setMessage('Update successful!');
-                }, 3000);
+
+                setMessage('Update successful!');
             } else {
                 console.log("Update not successful");
             }
+
+            setTimeout(() => {
+                setMessage('');
+            }, 3000);
         } catch (error) {
             console.log("Error updating profile", error);
         }
+        setIsLoading(false);
     };
 
     const handleImageClick = () => {
@@ -117,7 +124,17 @@ export default function Account() {
     };
 
     const handleFileChange = (e) => {
+        if (e.target.files.length === 0) {
+            return;
+        }
+
         setProfilePic(e.target.files[0]);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setPreviewProfilePic(reader.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
     };
 
     const handleChange = (e) => {
@@ -133,20 +150,20 @@ export default function Account() {
             <div className="w-full min-h-screen flex flex-col lg:flex-row">
                 <div className="w-full lg:w-1/4 bg-white shadow-md p-4">
                     <div className="flex flex-col items-center mb-6">
-                        <Image 
-                            src={user?.myfiles ? user.myfiles : "/icons/user.png"}
+                        <Image
+                            src={previewPorfilePic || user?.myfiles || "/icons/user.png"}
                             alt="Profile image"
                             width={200}
                             height={200}
-                            className="rounded-full h-[182px] object-cover cursor-pointer"
+                            className="rounded-full w-40 md:w-48 object-cover cursor-pointer"
                             onClick={handleImageClick}
                         />
-                        <input 
-                            type="file" 
-                            name="myfiles" 
-                            ref={fileInputRef} 
-                            style={{ display: 'none' }} 
-                            onChange={handleFileChange} 
+                        <input
+                            type="file"
+                            name="myfiles"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
                         />
                         <h2 className="text-lg font-semibold mt-2">{user?.username}</h2>
                         <h4 className="text-lg mt-1">{user?.prodi}</h4>
@@ -160,13 +177,13 @@ export default function Account() {
                             <FontAwesomeIcon icon={faLock} className="w-5 h-5" />
                             <span>Kata Sandi</span>
                         </a>
-                        <AlertDialogComponent 
-                                alertDialogAction="Logout" 
-                                alertDialogCancel="Cancel"
-                                onActionClick={handleLogout}
-                                alertDialogTitle="Apakah Anda yakin ingin keluar dari halaman ini?"
-                                actionButtonColor="bg-primary-600"
-                            >
+                        <AlertDialogComponent
+                            alertDialogAction="Logout"
+                            alertDialogCancel="Cancel"
+                            onActionClick={handleLogout}
+                            alertDialogTitle="Apakah Anda yakin ingin keluar dari halaman ini?"
+                            actionButtonColor="bg-primary-600"
+                        >
                             <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 cursor-pointer" >
                                 <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5" />
                                 <span>Logout</span>
@@ -216,21 +233,31 @@ export default function Account() {
                         <div className="flex flex-col">
                             <label className="font-semibold mb-1">Alamat</label>
                             <textarea
-                                type="text" 
-                                name="address" 
-                                value={formData.address} 
+                                type="text"
+                                name="address"
+                                value={formData.address}
                                 onChange={handleChange}
                                 className="border rounded w-full lg:w-[80%] h-20 resize-y"
                             ></textarea>
                         </div>
                         <div className="col-span-2 flex justify-end gap-4">
-                            <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Update</button>
+                            <button type="submit" className={`${isLoading ? 'bg-blue-600' : 'bg-blue-500'} text-white py-2 px-4 rounded`} disabled={isLoading}>
+                                {isLoading ?
+                                    <Image
+                                        src={"/icons/loading.svg"}
+                                        width={200}
+                                        height={200}
+                                        alt="loading"
+                                        className="w-6"
+                                    />
+                                    : 'Update'}
+                            </button>
                             <button type="button" onClick={handleCancel} className="bg-gray-300 py-2 px-4 rounded">Cancel</button>
                         </div>
                     </form>
                 </div>
                 {message && (
-                    <div className={`fixed rounded success-message ${message === 'Update successful!' ? 'bg-green-500' : 'bg-yellow-500'} text-white`}>
+                    <div className={`fixed rounded transition duration-300 ease-in-out success-message ${message === 'Update successful!' ? 'bg-green-500' : 'bg-yellow-500'} text-white`}>
                         {message}
                     </div>
                 )}

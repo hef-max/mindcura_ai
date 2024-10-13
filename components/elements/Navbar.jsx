@@ -6,18 +6,10 @@ import Link from 'next/link';
 import { useAuth } from '@/app/authContext';
 import NavItems from './NavItems';
 import MobileNav from './MobileNav';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { Separator } from "@radix-ui/react-separator"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars } from "@fortawesome/free-solid-svg-icons"
+
 
 const Navbar = () => {
   const { user, setUser } = useAuth();
-  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       try {

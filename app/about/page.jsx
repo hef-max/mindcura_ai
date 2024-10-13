@@ -11,24 +11,26 @@ export default function About() {
                     <h5 className="text-grey-600">#Your Mental Health Matters</h5>
                 </div>
                 <div className="flex flex-col-reverse lg:flex-row gap-5 p-5">
-                    <div className="flex flex-col text-center lg:text-left gap-4 w-full lg:w-[50%]">
+                    <div className="flex flex-col text-center lg:text-left gap-4 w-full lg:w-7/12">
                         <div className="text-xl font-semibold">
                             MindCura<br></br>
                         </div>
                         <div className="text-grey-600 text-justify">
-                         <b>MindCura</b> merupakan salah satu dari <b>PKM Karsa Cipta Universitas Teknologi Yogyakarta</b>  yang berfokus pada solusi kesehatan mental yang inovatif.
-                          Kami mengembangkan aplikasi yang menggabungkan <i>Augmented reality</i> (AR) dan <i>Artificial Intelligence</i> (AI) untuk membantu individu mengelola dan meningkatkan kesehatan mental mereka.
-                           Produk kami, aplikasi MindCura, menawarkan terapi interaktif dan rekomendasi hasil personalisasi yang dapat diakses kapan saja, dan di mana saja.
+                            <b>MindCura</b> merupakan salah satu dari <b>PKM Karsa Cipta Universitas Teknologi Yogyakarta</b>  yang berfokus pada solusi kesehatan mental yang inovatif.
+                            <br /><br />
+                            Kami mengembangkan aplikasi yang menggabungkan <i>Augmented reality</i> (AR) dan <i>Artificial Intelligence</i> (AI) untuk membantu individu mengelola dan meningkatkan kesehatan mental mereka.
+                            <br /><br />
+                            Produk kami, aplikasi MindCura, menawarkan terapi interaktif dan rekomendasi hasil personalisasi yang dapat diakses kapan saja, dan di mana saja.
                             Dengan tim ahli di bidang teknologi dan psikologi, MindCura berkomitmen untuk meningkatkan kesejahteraan mental melalui pendekatan modern dan efektif.
                         </div>
                     </div>
-                    <div className="flex flex-col lg:flex-row justify-center lg:items-start lg:justify-end w-full lg:w-[50%]">
-                        <Image 
+                    <div className="flex flex-col lg:flex-row justify-center items-center w-full lg:w-5/12 ">
+                        <Image
                             src="/images/Ellipse 9.png"
                             alt='logo image'
                             width={400}
                             height={400}
-                            className="w-auto h-auto rounded-sm overflow-hidden"
+                            className="w-full md:w-6/12 lg:w-8/12 xl:w-6/12 h-auto rounded-sm overflow-hidden"
                         />
                     </div>
                 </div>
@@ -36,50 +38,50 @@ export default function About() {
                     <h5 className="text-xl font-semibold">Mitra Kami</h5> <br></br>
                 </div>
                 <div className="flex justify-center gap-5 flex-wrap p-5">
-                    <Image 
-                        src="/images/logo dikti.png" 
-                        alt="Supported by" 
-                        width={90} 
-                        height={90} 
-                        className="w-auto h-auto" 
+                    <Image
+                        src="/images/logo dikti.png"
+                        alt="Supported by"
+                        width={90}
+                        height={90}
+                        className="w-auto h-auto"
                     />
-                    <Image 
-                        src="/images/logo uty.png" 
-                        alt="Supported by" 
-                        width={80} 
-                        height={110} 
-                        className="w-auto h-auto" 
+                    <Image
+                        src="/images/logo uty.png"
+                        alt="Supported by"
+                        width={80}
+                        height={110}
+                        className="w-auto h-auto"
                     />
-                    <Image 
-                        src="/images/Logo_Kampus_Merdeka_Kemendikbud.png" 
-                        alt="Supported by" 
-                        width={110} 
-                        height={20} 
-                        className="w-auto h-auto" 
+                    <Image
+                        src="/images/Logo_Kampus_Merdeka_Kemendikbud.png"
+                        alt="Supported by"
+                        width={110}
+                        height={20}
+                        className="w-auto h-auto"
                     />
-                    <Image 
-                        src="/images/Logo-PKM-Warna.png" 
-                        alt="Supported by" 
-                        width={120} 
-                        height={80} 
-                        className="w-auto h-auto" 
+                    <Image
+                        src="/images/Logo-PKM-Warna.png"
+                        alt="Supported by"
+                        width={120}
+                        height={80}
+                        className="w-auto h-auto"
                     />
-                    <Image 
-                        src="/images/Logo-BS-Warna.png" 
-                        alt="Supported by" 
-                        width={110} 
-                        height={80} 
-                        className="w-auto h-auto" 
+                    <Image
+                        src="/images/Logo-BS-Warna.png"
+                        alt="Supported by"
+                        width={110}
+                        height={80}
+                        className="w-auto h-auto"
                     />
-                    <Image 
-                        src="/images/logo simbelmawa.png" 
-                        alt="Supported by" 
-                        width={120} 
-                        height={20} 
-                        className="w-auto h-auto" 
+                    <Image
+                        src="/images/logo simbelmawa.png"
+                        alt="Supported by"
+                        width={120}
+                        height={20}
+                        className="w-auto h-auto"
                     />
                 </div>
-                
+
                 <div className="flex flex-col-reverse lg:flex-row-reverse gap-5 bg-primary-50 p-5 rounded-md">
                     <div className="flex flex-col text-center lg:text-left gap-4 w-full lg:w-[50%]">
                         <div className="text-xl font-semibold">
@@ -88,9 +90,9 @@ export default function About() {
                         <div className="text-grey-600 text-justify">
                             Melalui teknologi<i> Augmented Reality</i> (AR) dan <i>Artificial Intelligence</i> (AI), MindCura menghadirkan platrfrom
                             interaktif untuk membantu pengguna dalam <b>memahami kondisi mental</b> mereka dengan lebih <b>mudah</b> dan <b>efisien</b>.
-                            Diharapkan dengan adanya sistem ini dapat <b>mendeteksi</b> gangguan kesehatan mental <b>secara dini </b> dan 
+                            Diharapkan dengan adanya sistem ini dapat <b>mendeteksi</b> gangguan kesehatan mental <b>secara dini </b> dan
                             <b> memberikan terapi</b> yang berguna untuk meningkatkan <b>kualitas</b> kesehatan mental sekaligus <b>kesadaran akan pentingnnya
-                            kesehatan mental</b>.
+                                kesehatan mental</b>.
                         </div>
                     </div>
                     <div className="flex justify-center lg:items-start lg:justify-start w-full lg:w-[50%]">

@@ -37,7 +37,7 @@ export default function Schedule() {
 
     return (
         <Layout>
-            <div className="flex flex-col md:flex-row w-full px-4 gap-10 justify-center">
+            <div className="flex flex-col lg:flex-row w-full px-4 gap-10 justify-center">
                 {/* Left Section for Calendar */}
                 <div>
                     <div className="flex justify-between py-4">
