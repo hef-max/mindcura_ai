@@ -15,8 +15,29 @@ export const UI = ({ hidden, ...props }) => {
   const [showContent, setShowContent] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioChunks, setAudioChunks] = useState([]);
+  const [lstmPrediction, setLstmPrediction] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [subtitle, setSubtitle] = useState("");
+
+  const processAudio = useCallback(async () => {
+    const blob = new Blob(audioChunks, { type: 'audio/wav' });
+    const formData = new FormData();
+    formData.append('audio_file', blob, 'audio.wav');
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/classify_lstm`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      const result = await response.json();
+      setLstmPrediction(result.emotion);
+
+    } catch (error) {
+      console.error('Error making LSTM prediction:', error);
+    }
+  }, [audioChunks]);
 
   const sendMessage = useCallback((text) => {
     if (!loading && !message) {
@@ -96,6 +117,12 @@ export const UI = ({ hidden, ...props }) => {
       return () => clearTimeout(subtitleTimeout);
     }
   }, [message]);
+  
+  useEffect(() => {
+    if (!isRecording) {
+      processAudio();
+    }
+  }, [isRecording, processAudio]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn&apos;t support speech recognition.</span>;
